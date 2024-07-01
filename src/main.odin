@@ -5,13 +5,13 @@ import "core:os"
 foreign import "system:c"
 
 foreign c {
-	posix_openpt :: proc(flags: int) -> int ---
-	grantpt :: proc(file_descriptor: int) -> int ---
-	unlockpt :: proc(file_descriptor: int) -> int ---
-	ptsname :: proc(file_descriptor: int) -> cstring ---
+	posix_openpt :: proc(flags: i32) -> i32 ---
+	grantpt :: proc(file_descriptor: i32) -> i32 ---
+	unlockpt :: proc(file_descriptor: i32) -> i32 ---
+	ptsname :: proc(file_descriptor: i32) -> cstring ---
 }
 
-set_up_pty :: proc() -> (file_descriptor: int, slave_name: string, success: bool) {
+set_up_pty :: proc() -> (file_descriptor: i32, slave_name: string, success: bool) {
 	file_descriptor = posix_openpt(os.O_RDWR)
 	if file_descriptor == -1 {
 		return -1, "", false
