@@ -1,6 +1,9 @@
 package pseudoterminal
 
 import "core:os"
+import "core:os/os2"
+import "core:strings"
+import "core:sys/linux"
 
 foreign import libc "system:c"
 foreign libc {
@@ -51,4 +54,27 @@ set_up_pty :: proc() -> (pty: Pty, success: bool) {
 close_pty :: proc(pty: Pty) {
 	os.close(pty.master_fd)
 	os.close(pty.slave_fd)
+}
+
+start_shell :: proc(pty: Pty) -> (process_id: linux.Pid, success: bool) {
+	error: linux.Errno
+	process_id, error = linux.fork()
+	if error != nil {return 0, false}
+
+	if process_id == 0 {
+		linux.setsid()
+
+		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stdin))
+		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stdout))
+		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stderr))
+
+		environment: [dynamic]cstring
+		for element in os2.environ(context.allocator) {
+			append(&environment, strings.clone_to_cstring(element))
+		}
+
+		linux.execve("/bin/sh", raw_data([]cstring{"/bin/sh", nil}), raw_data(environment[:]))
+	}
+
+	return process_id, true
 }
