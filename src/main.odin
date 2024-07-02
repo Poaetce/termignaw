@@ -1,7 +1,9 @@
 package main
 
-import "core:os"
 import "core:fmt"
+import "core:os"
+import "core:os/os2"
+import "core:strings"
 import "core:sys/linux"
 
 import "pseudoterminal"
@@ -21,6 +23,24 @@ main :: proc() {
 	if error != nil {return}
 
 	if process_id == 0 {
+		slave_fd: os.Handle
+		error: os.Errno
+		slave_fd, error = os.open(slave_name, os.O_RDWR)
+		if error != 0 {return}
+		defer os.close(slave_fd)
+
+		linux.setsid()
+
+		linux.dup2(linux.Fd(slave_fd), linux.Fd(os.stdin))
+		linux.dup2(linux.Fd(slave_fd), linux.Fd(os.stdout))
+		linux.dup2(linux.Fd(slave_fd), linux.Fd(os.stderr))
+
+		environment: [dynamic]cstring
+		for element in os2.environ(context.allocator) {
+			append(&environment, strings.clone_to_cstring(element))
+		}
+
+		linux.execve("/bin/sh", raw_data([]cstring{"/bin/sh", nil}), raw_data(environment[:]))
 	} else if process_id > 0 {
 		buffer: [BUFFER_SIZE]u8
 
