@@ -56,7 +56,7 @@ close_pty :: proc(pty: Pty) {
 	os.close(pty.slave_fd)
 }
 
-start_shell :: proc(pty: Pty) -> (process_id: linux.Pid, success: bool) {
+start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, success: bool) {
 	error: linux.Errno
 	process_id, error = linux.fork()
 	if error != nil {return 0, false}
@@ -73,7 +73,13 @@ start_shell :: proc(pty: Pty) -> (process_id: linux.Pid, success: bool) {
 			append(&environment, strings.clone_to_cstring(element))
 		}
 
-		linux.execve("/bin/sh", raw_data([]cstring{"/bin/sh", nil}), raw_data(environment[:]))
+		shell_name_cstring: cstring = strings.clone_to_cstring(shell_name)
+
+		linux.execve(
+			shell_name_cstring,
+			raw_data([]cstring{shell_name_cstring, nil}),
+			raw_data(environment[:])
+		)
 	}
 
 	return process_id, true

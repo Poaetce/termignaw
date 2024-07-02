@@ -16,7 +16,7 @@ main :: proc() {
 	defer pseudoterminal.close_pty(pty)
 
 	process_id: linux.Pid
-	process_id, success = pseudoterminal.start_shell(pty)
+	process_id, success = pseudoterminal.start_shell(pty, "/bin/sh")
 	if !success {return}
 
 	if process_id > 0 {
