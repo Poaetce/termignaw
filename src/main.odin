@@ -14,9 +14,9 @@ main :: proc() {
 	if !success {return}
 
 	process_id: linux.Pid
-	errno: linux.Errno
-	process_id, errno = linux.fork()
-	if errno != linux.Errno.NONE {return}
+	error: linux.Errno
+	process_id, error = linux.fork()
+	if error != nil {return}
 
 	if process_id == 0 {
 	} else if process_id > 0 {
