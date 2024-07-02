@@ -19,18 +19,18 @@ main :: proc() {
 	process_id, success = pseudoterminal.start_shell(pty, "/bin/sh")
 	if !success {return}
 
-	if process_id > 0 {
-		buffer: [BUFFER_SIZE]u8
+	if process_id < 0 {return}
 
-		for {
-			bytes_read: int
-			error: os.Errno
-			bytes_read, error = os.read(pty.master_fd, buffer[:])
-			if error != 0 {break}
+	buffer: [BUFFER_SIZE]u8
 
-			if bytes_read <= 0 {break}
+	for {
+		bytes_read: int
+		error: os.Errno
+		bytes_read, error = os.read(pty.master_fd, buffer[:])
+		if error != 0 {break}
 
-			os.write(os.stdout, buffer[:bytes_read])
-		}
+		if bytes_read <= 0 {break}
+
+		os.write(os.stdout, buffer[:bytes_read])
 	}
 }
