@@ -2,8 +2,8 @@ package main
 
 import "core:os"
 
-foreign import "system:c"
-foreign c {
+foreign import libc "system:c"
+foreign libc {
 	posix_openpt :: proc(flags: i32) -> i32 ---
 	grantpt :: proc(file_descriptor: i32) -> i32 ---
 	unlockpt :: proc(file_descriptor: i32) -> i32 ---
