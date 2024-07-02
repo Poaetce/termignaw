@@ -11,11 +11,11 @@ import "pseudoterminal"
 BUFFER_SIZE: u16 : 1024
 
 main :: proc() {
-	master_fd: os.Handle
-	slave_name: string
+	pty: pseudoterminal.Pty
 	success: bool
-	master_fd, slave_name, success = pseudoterminal.set_up_pty()
+	pty, success = pseudoterminal.set_up_pty()
 	if !success {return}
+	defer pseudoterminal.close_pty(pty)
 
 	process_id: linux.Pid
 	error: linux.Errno
@@ -23,17 +23,11 @@ main :: proc() {
 	if error != nil {return}
 
 	if process_id == 0 {
-		slave_fd: os.Handle
-		error: os.Errno
-		slave_fd, error = os.open(slave_name, os.O_RDWR)
-		if error != 0 {return}
-		defer os.close(slave_fd)
-
 		linux.setsid()
 
-		linux.dup2(linux.Fd(slave_fd), linux.Fd(os.stdin))
-		linux.dup2(linux.Fd(slave_fd), linux.Fd(os.stdout))
-		linux.dup2(linux.Fd(slave_fd), linux.Fd(os.stderr))
+		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stdin))
+		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stdout))
+		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stderr))
 
 		environment: [dynamic]cstring
 		for element in os2.environ(context.allocator) {
@@ -47,7 +41,7 @@ main :: proc() {
 		for {
 			bytes_read: int
 			error: os.Errno
-			bytes_read, error = os.read(master_fd, buffer[:])
+			bytes_read, error = os.read(pty.master_fd, buffer[:])
 			if error != 0 {break}
 
 			if bytes_read <= 0 {break}
