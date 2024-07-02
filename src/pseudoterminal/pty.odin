@@ -19,19 +19,31 @@ set_up_pty :: proc() -> (pty: Pty, success: bool) {
 	master_fd_i32: i32 = posix_openpt(os.O_RDWR)
 	if master_fd_i32 == -1 {return Pty{}, false}
 
-	if grantpt(master_fd_i32) == -1 {return Pty{}, false}
+	master_fd := os.Handle(master_fd_i32)
 
-	if unlockpt(master_fd_i32) == -1 {return Pty{}, false}
+	if grantpt(master_fd_i32) == -1 {
+		os.close(master_fd)
+		return Pty{}, false
+	}
+
+	if unlockpt(master_fd_i32) == -1 {
+		os.close(master_fd)
+		return Pty{}, false
+	}
 
 	slave_name := string(ptsname(master_fd_i32))
-	if slave_name == "" {return Pty{}, false}
+	if slave_name == "" {
+		os.close(master_fd)
+		return Pty{}, false
+	}
 
 	slave_fd: os.Handle
 	error: os.Errno
 	slave_fd, error = os.open(slave_name, os.O_RDWR)
-	if error != 0 {return Pty{}, false}
-
-	master_fd := os.Handle(master_fd_i32)
+	if error != 0 {
+		os.close(master_fd)
+		return Pty{}, false
+	}
 
 	return Pty{master_fd, slave_fd}, true
 }
