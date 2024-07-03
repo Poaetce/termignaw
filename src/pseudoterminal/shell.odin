@@ -24,11 +24,11 @@ start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, suc
 
 		shell_name_cstring: cstring = strings.clone_to_cstring(shell_name)
 
-		linux.execve(
+		if linux.execve(
 			shell_name_cstring,
 			raw_data([]cstring{shell_name_cstring, nil}),
 			raw_data(environment[:])
-		)
+		) != nil {return 0, false}
 	}
 
 	return process_id, true
