@@ -4,9 +4,12 @@ directory="build/output"
 
 mkdir -p $directory
 
-odin build src -out:$directory/$name
-
-echo $directory/$name
+if odin build src -out:"$directory/$name"
+then
+	echo $directory/$name
+else
+	exit 1
+fi
 
 if [ "$1" = "run" ]
 then
