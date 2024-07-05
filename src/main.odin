@@ -20,11 +20,7 @@ main :: proc() {
 	if !success {return}
 	if process_id < 0 {return}
 
-	if linux.fcntl_setfl(
-		linux.Fd(pty.master_fd),
-		linux.F_SETFL,
-		{linux.Open_Flags_Bits.NONBLOCK}
-	) != nil {return}
+	if !pseudoterminal.set_non_blocking(pty) {return}
 
 	buffer: [BUFFER_SIZE]u8
 

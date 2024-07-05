@@ -1,6 +1,7 @@
 package pseudoterminal
 
 import "core:os"
+import "core:sys/linux"
 
 foreign import libc "system:c"
 foreign libc {
@@ -51,4 +52,14 @@ set_up_pty :: proc() -> (pty: Pty, success: bool) {
 close_pty :: proc(pty: Pty) {
 	os.close(pty.master_fd)
 	os.close(pty.slave_fd)
+}
+
+set_non_blocking :: proc(pty: Pty) -> (success: bool) {
+	if linux.fcntl_setfl(
+		linux.Fd(pty.master_fd),
+		linux.F_SETFL,
+		{linux.Open_Flags_Bits.NONBLOCK}
+	) != nil {return false}
+
+	return true
 }
