@@ -18,8 +18,13 @@ main :: proc() {
 	process_id: linux.Pid
 	process_id, success = pseudoterminal.start_shell(pty, "/bin/sh")
 	if !success {return}
-
 	if process_id < 0 {return}
+
+	if linux.fcntl_setfl(
+		linux.Fd(pty.master_fd),
+		linux.F_SETFL,
+		{linux.Open_Flags_Bits.NONBLOCK}
+	) != nil {return}
 
 	buffer: [BUFFER_SIZE]u8
 
@@ -27,9 +32,8 @@ main :: proc() {
 		bytes_read: int
 		error: os.Errno
 		bytes_read, error = os.read(pty.master_fd, buffer[:])
+		if error == 11 {continue}
 		if error != 0 {break}
-
-		if bytes_read <= 0 {break}
 
 		os.write(os.stdout, buffer[:bytes_read])
 	}
