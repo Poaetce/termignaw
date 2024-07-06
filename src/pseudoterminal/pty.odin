@@ -72,7 +72,9 @@ start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, suc
 	if error != nil {return 0, false}
 
 	if process_id == 0 {
-		linux.setsid()
+		error: linux.Errno
+		process_id, error = linux.setsid()
+		if error != nil {return 0, false}
 
 		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stdin))
 		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stdout))
