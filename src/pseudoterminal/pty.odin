@@ -34,11 +34,13 @@ set_up_pty :: proc() -> (pty: Pty, success: bool) {
 		return Pty{}, false
 	}
 
-	slave_name := string(ptsname(master_fd_i32))
-	if slave_name == "" {
+	slave_name_cstring := ptsname(master_fd_i32)
+	defer delete(slave_name_cstring)
+	if slave_name_cstring == "" {
 		os.close(master_fd)
 		return Pty{}, false
 	}
+	slave_name := string(slave_name_cstring)
 
 	slave_fd: os.Handle
 	error: os.Errno
@@ -80,12 +82,18 @@ start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, suc
 		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stdout))
 		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stderr))
 
+		environment_strings: []string = os2.environ(context.allocator)
+		defer delete(environment_strings)
 		environment: [dynamic]cstring
-		for element in os2.environ(context.allocator) {
-			append(&environment, strings.clone_to_cstring(element))
+		defer delete(environment)
+		for element in environment_strings {
+			element_cstring: cstring = strings.clone_to_cstring(element)
+			defer delete(element_cstring)
+			append(&environment, element_cstring)
 		}
 
 		shell_name_cstring: cstring = strings.clone_to_cstring(shell_name)
+		defer delete(shell_name_cstring)
 
 		if linux.execve(
 			shell_name_cstring,
