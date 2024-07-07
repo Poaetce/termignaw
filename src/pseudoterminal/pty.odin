@@ -34,13 +34,11 @@ set_up_pty :: proc() -> (pty: Pty, success: bool) {
 		return Pty{}, false
 	}
 
-	slave_name_cstring := ptsname(master_fd_i32)
-	defer delete(slave_name_cstring)
-	if slave_name_cstring == "" {
+	slave_name := string(ptsname(master_fd_i32))
+	if slave_name == "" {
 		os.close(master_fd)
 		return Pty{}, false
 	}
-	slave_name := string(slave_name_cstring)
 
 	slave_fd: os.Handle
 	error: os.Errno
