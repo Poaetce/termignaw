@@ -7,9 +7,14 @@ Character :: struct {
 	color: raylib.Color,
 }
 
+Row :: struct {
+	content: []Character,
+	wrapping: bool,
+}
+
 Terminal :: struct {
 	dimensions: [2]u16,
-	content: [][]Character,
+	content: [dynamic]Row,
 	cursor_position: [2]u16,
 	screen_position: u16,
 }
