@@ -2,13 +2,14 @@ package interface
 
 import "vendor:raylib"
 
-Character :: struct {
+Cell :: struct {
 	character: rune,
-	color: raylib.Color,
+	foreground_color: raylib.Color,
+	background_color: raylib.Color,
 }
 
 Row :: struct {
-	content: []Character,
+	content: []Cell,
 	wrapping: bool,
 }
 
