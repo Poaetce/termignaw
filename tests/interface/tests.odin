@@ -10,7 +10,7 @@ test_calculate_terminal_dimensions :: proc(t: ^testing.T) {
 	window_padding: [2]i32 = {10, 10}
 	cell_height: f32 = 12
 
-	result: [2]u16 = interface.calculate_terminal_dimensions(window_dimensions, window_padding, cell_height)
+	terminal_dimensions: [2]u16 = interface.calculate_terminal_dimensions(window_dimensions, window_padding, cell_height)
 
-	testing.expect_value(t, result, [2]u16{210, 58})
+	testing.expect_value(t, terminal_dimensions, [2]u16{210, 58})
 }
