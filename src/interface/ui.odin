@@ -15,7 +15,7 @@ Row :: struct {
 
 Terminal :: struct {
 	dimensions: [2]u16,
-	content: [dynamic]Row,
+	content: [dynamic]^Row,
 	cursor_position: [2]u16,
 	screen_position: u16,
 }
@@ -29,7 +29,7 @@ Text :: struct {
 Window :: struct {
 	title: string,
 	dimensions: [2]i32,
-	terminal: Terminal,
-	text: Text,
+	terminal: ^Terminal,
+	text: ^Text,
 	padding: [2]i32,
 }
