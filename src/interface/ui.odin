@@ -1,5 +1,6 @@
 package interface
 
+import "core:math"
 import "vendor:raylib"
 
 Cell :: struct {
@@ -32,4 +33,17 @@ Window :: struct {
 	terminal: ^Terminal,
 	text: ^Text,
 	padding: [2]i32,
+}
+
+calculate_terminal_dimensions :: proc(
+	window_dimensions: [2]i32,
+	window_padding: [2]i32,
+	cell_height: f32
+) -> (terminal_dimensions: [2]u16) {
+	cell_width: f32 = cell_height / 2
+
+	return [2]u16{
+		u16(math.floor(f32(window_dimensions.x - window_padding.x * 2) / cell_width)),
+		u16(math.floor(f32(window_dimensions.y - window_padding.y * 2) / cell_height)),
+	}
 }
