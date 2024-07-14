@@ -1,6 +1,6 @@
 # !/bin/bash
 name="termignaw"
-directory="build/output"
+directory="build"
 
 mkdir -p $directory
 
