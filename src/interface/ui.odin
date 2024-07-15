@@ -16,28 +16,28 @@ Row :: struct {
 
 Terminal :: struct {
 	dimensions: [2]u16,
-	content: [dynamic]^Row,
+	content: [dynamic]Row,
 	cursor_position: [2]u16,
 	screen_position: u16,
 }
 
 Text :: struct {
 	font: raylib.Font,
-	size: i32,
+	size: u16,
 	loaded_characters: []rune,
 }
 
 Window :: struct {
 	title: string,
-	dimensions: [2]i32,
+	dimensions: [2]u32,
 	terminal: ^Terminal,
 	text: ^Text,
-	padding: [2]i32,
+	padding: [2]u32,
 }
 
 calculate_terminal_dimensions :: proc(
-	window_dimensions: [2]i32,
-	window_padding: [2]i32,
+	window_dimensions: [2]u32,
+	window_padding: [2]u32,
 	cell_height: f32
 ) -> (terminal_dimensions: [2]u16) {
 	cell_width: f32 = cell_height / 2
