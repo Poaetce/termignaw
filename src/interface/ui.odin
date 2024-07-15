@@ -39,7 +39,7 @@ Window :: struct {
 calculate_terminal_dimensions :: proc(
 	window_dimensions: [2]u32,
 	window_padding: [2]u32,
-	cell_height: f32
+	cell_height: f32,
 ) -> (terminal_dimensions: [2]u16) {
 	cell_width: f32 = cell_height / 2
 

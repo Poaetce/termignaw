@@ -69,7 +69,7 @@ set_non_blocking :: proc(pty: Pty) -> (success: bool) {
 	if linux.fcntl_setfl(
 		linux.Fd(pty.master_fd),
 		linux.F_SETFL,
-		{linux.Open_Flags_Bits.NONBLOCK}
+		{linux.Open_Flags_Bits.NONBLOCK},
 	) != nil {return false}
 
 	return true
@@ -112,7 +112,7 @@ start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, suc
 		if linux.execve(
 			shell_name_cstring,
 			raw_data([]cstring{shell_name_cstring, nil}),
-			raw_data(environment[:])
+			raw_data(environment[:]),
 		) != nil {return 0, false}
 	}
 
