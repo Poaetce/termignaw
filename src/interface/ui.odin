@@ -22,6 +22,7 @@ Terminal :: struct {
 }
 
 Text :: struct {
+	font_data: []u8,
 	font: raylib.Font,
 	size: u16,
 	loaded_characters: []rune,
