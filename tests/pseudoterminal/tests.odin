@@ -36,6 +36,8 @@ test_start_shell :: proc(t: ^testing.T) {
 	if !success {return}
 	defer pseudoterminal.close_pty(pty)
 
-	_, success = pseudoterminal.start_shell(pty, "/bin/sh")
+	shell_name: string = "/bin/sh"
+
+	_, success = pseudoterminal.start_shell(pty, shell_name)
 	testing.expect(t, success)
 }
