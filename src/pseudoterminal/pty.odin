@@ -13,7 +13,7 @@ foreign libc {
 	ptsname :: proc(fd: i32) -> cstring ---
 }
 
-// a basic structure containting the file descriptors for pseudoterminal devices
+// file descriptors for the opened pseudoterminal devices
 Pty :: struct {
 	master_fd: os.Handle,
 	slave_fd: os.Handle,

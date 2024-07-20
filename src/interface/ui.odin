@@ -16,6 +16,7 @@ Row :: struct {
 	wrapping: bool,
 }
 
+// terminal contents and state
 Grid :: struct {
 	dimensions: [2]u16,
 	contents: [dynamic]Row,
@@ -23,6 +24,7 @@ Grid :: struct {
 	screen_position: u16,
 }
 
+// font and text related data
 Font_Info :: struct {
 	data: []u8,
 	font: raylib.Font,
@@ -36,12 +38,14 @@ Window :: struct {
 	padding: [2]u32,
 }
 
+// main terminal structure
 Terminal :: struct {
 	window: Window,
 	grid: ^Grid,
 	font_info: ^Font_Info,
 }
 
+// calculates the dimensions for the terminal grid
 calculate_grid_dimensions :: proc(
 	window_dimensions: [2]u32,
 	window_padding: [2]u32,
@@ -71,15 +75,18 @@ destroy_grid :: proc(grid: ^Grid) {
 create_font_info :: proc(font_name: string, text_size: u16) -> (font_info: ^Font_Info, success: bool) {
 	font_info = new(Font_Info)
 
+	// read the data from the font file
 	font_info.data, success = os.read_entire_file(font_name)
 	if !success {
 		free(font_info)
 		return nil, false
 	}
 
+	// clone the font name as a cstring
 	font_name_cstring: cstring = strings.clone_to_cstring(font_name)
 	defer delete(font_name_cstring)
 
+	// load font using the font data
 	font_info.font = raylib.LoadFontFromMemory(
 		raylib.GetFileExtension(font_name_cstring),
 		raw_data(font_info.data),
