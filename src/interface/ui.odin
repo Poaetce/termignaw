@@ -12,19 +12,19 @@ Cell :: struct {
 }
 
 Row :: struct {
-	content: []Cell,
+	cells: []Cell,
 	wrapping: bool,
 }
 
-Terminal :: struct {
+Grid :: struct {
 	dimensions: [2]u16,
-	content: [dynamic]Row,
+	contents: [dynamic]Row,
 	cursor_position: [2]u16,
 	screen_position: u16,
 }
 
-Text :: struct {
-	font_data: []u8,
+Font_Info :: struct {
+	data: []u8,
 	font: raylib.Font,
 	size: u16,
 	loaded_characters: []rune,
@@ -33,16 +33,20 @@ Text :: struct {
 Window :: struct {
 	title: string,
 	dimensions: [2]u32,
-	terminal: ^Terminal,
-	text: ^Text,
 	padding: [2]u32,
 }
 
-calculate_terminal_dimensions :: proc(
+Terminal :: struct {
+	window: Window,
+	grid: ^Grid,
+	font_info: ^Font_Info,
+}
+
+calculate_grid_dimensions :: proc(
 	window_dimensions: [2]u32,
 	window_padding: [2]u32,
 	cell_height: f32,
-) -> (terminal_dimensions: [2]u16) {
+) -> (grid_dimensions: [2]u16) {
 	cell_width: f32 = cell_height / 2
 
 	return [2]u16{
@@ -51,80 +55,80 @@ calculate_terminal_dimensions :: proc(
 	}
 }
 
-create_terminal :: proc(dimensions: [2]u32, text_size: u16, padding: [2]u32) -> (terminal: ^Terminal) {
-	terminal = new(Terminal)
-	terminal.dimensions = calculate_terminal_dimensions(dimensions, padding, f32(text_size))
+create_grid :: proc(dimensions: [2]u32, text_size: u16, padding: [2]u32) -> (grid: ^Grid) {
+	grid = new(Grid)
+	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
 
-	return terminal
+	return grid
 }
 
-destroy_terminal :: proc(terminal: ^Terminal) {
-	delete(terminal.content)
+destroy_grid :: proc(grid: ^Grid) {
+	delete(grid.contents)
 
-	free(terminal)
+	free(grid)
 }
 
-create_text :: proc(font_name: string, text_size: u16) -> (text: ^Text, success: bool) {
-	text = new(Text)
+create_font_info :: proc(font_name: string, text_size: u16) -> (font_info: ^Font_Info, success: bool) {
+	font_info = new(Font_Info)
 
-	text.font_data, success = os.read_entire_file(font_name)
+	font_info.data, success = os.read_entire_file(font_name)
 	if !success {
-		free(text)
+		free(font_info)
 		return nil, false
 	}
 
 	font_name_cstring: cstring = strings.clone_to_cstring(font_name)
 	defer delete(font_name_cstring)
 
-	text.font = raylib.LoadFontFromMemory(
+	font_info.font = raylib.LoadFontFromMemory(
 		raylib.GetFileExtension(font_name_cstring),
-		raw_data(text.font_data),
-		i32(len(text.font_data)),
+		raw_data(font_info.data),
+		i32(len(font_info.data)),
 		i32(text_size),
-		raw_data(text.loaded_characters),
-		i32(len(text.loaded_characters)),
+		raw_data(font_info.loaded_characters),
+		i32(len(font_info.loaded_characters)),
 	)
 
-	text.size = text_size
+	font_info.size = text_size
 
-	return text, true
+	return font_info, true
 }
 
-destroy_text :: proc(text: ^Text) {
-	raylib.UnloadFont(text.font)
-	delete(text.font_data)
-	delete(text.loaded_characters)
+destroy_font_info :: proc(font_info: ^Font_Info) {
+	raylib.UnloadFont(font_info.font)
+	delete(font_info.data)
+	delete(font_info.loaded_characters)
 
-	free(text)
+	free(font_info)
 }
 
-create_window :: proc(
+create_terminal :: proc(
 	title: string,
 	dimensions: [2]u32,
 	font_name: string,
 	text_size: u16,
 	padding: [2]u32,
-) -> (window: ^Window, success: bool) {
-	window = new(Window)
+) -> (terminal: ^Terminal, success: bool) {
+	terminal = new(Terminal)
 
-	window.title = title
-	window.dimensions = dimensions
-	window.padding = padding
+	terminal.window.title = title
+	terminal.window.dimensions = dimensions
+	terminal.window.padding = padding
 
-	window.text, success = create_text(font_name, text_size)
+	terminal.font_info, success = create_font_info(font_name, text_size)
 	if !success {
-		free(window)
+		free(terminal)
 		return nil, false
 	}
 
-	window.terminal = create_terminal(dimensions, text_size, padding)
+	terminal.grid = create_grid(dimensions, text_size, padding)
 
-	return window, true
+	return terminal, true
 }
 
-destroy_window :: proc(window: ^Window) {
-	destroy_terminal(window.terminal)
-	destroy_text(window.text)
+destroy_terminal :: proc(terminal: ^Terminal) {
+	destroy_grid(terminal.grid)
+	destroy_font_info(terminal.font_info)
 
-	free(window)
+	free(terminal)
 }
