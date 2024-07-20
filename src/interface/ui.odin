@@ -142,7 +142,7 @@ destroy_terminal :: proc(terminal: ^Terminal) {
 
 // initialises and opens the terminal window
 open_window :: proc(terminal: ^Terminal) {
-	window_title: cstring = string.clone_to_cstring(terminal.window.title)
+	window_title: cstring = strings.clone_to_cstring(terminal.window.title)
 	defer delete(window_title)
 
 	raylib.InitWindow(
