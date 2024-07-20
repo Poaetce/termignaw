@@ -58,6 +58,12 @@ create_terminal :: proc(dimensions: [2]u32, text_size: u16, padding: [2]u32) -> 
 	return terminal
 }
 
+destroy_terminal :: proc(terminal: ^Terminal) {
+	delete(terminal.content)
+
+	free(terminal)
+}
+
 create_text :: proc(font_name: string, text_size: u16) -> (text: ^Text, success: bool) {
 	text = new(Text)
 
@@ -84,6 +90,14 @@ create_text :: proc(font_name: string, text_size: u16) -> (text: ^Text, success:
 	return text, true
 }
 
+destroy_text :: proc(text: ^Text) {
+	raylib.UnloadFont(text.font)
+	delete(text.font_data)
+	delete(text.loaded_characters)
+
+	free(text)
+}
+
 create_window :: proc(
 	title: string,
 	dimensions: [2]u32,
@@ -106,4 +120,11 @@ create_window :: proc(
 	window.terminal = create_terminal(dimensions, text_size, padding)
 
 	return window, true
+}
+
+destroy_window :: proc(window: ^Window) {
+	destroy_terminal(window.terminal)
+	destroy_text(window.text)
+
+	free(window)
 }
