@@ -29,7 +29,7 @@ Font_Info :: struct {
 	data: []u8,
 	font: raylib.Font,
 	size: u16,
-	loaded_characters: []rune,
+	loaded_characters: [dynamic]rune,
 }
 
 Window :: struct {
