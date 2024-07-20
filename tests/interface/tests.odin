@@ -16,6 +16,17 @@ test_calculate_grid_dimensions :: proc(t: ^testing.T) {
 }
 
 @(test)
+test_calculate_window_position :: proc(t: ^testing.T) {
+	grid_position := [2]u16{69, 42}
+	window_padding := [2]u32{10, 10}
+	cell_height: f32 = 12
+
+	window_position: [2]u32 = interface.calculate_window_position(grid_position, window_padding, cell_height)
+
+	testing.expect_value(t, window_position, [2]u32{424, 514})
+}
+
+@(test)
 test_create_grid :: proc(t: ^testing.T) {
 	dimensions := [2]u32{1280, 720}
 	text_size: u16 = 12

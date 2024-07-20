@@ -59,6 +59,20 @@ calculate_grid_dimensions :: proc(
 	}
 }
 
+// converts grid position into pixel position
+calculate_window_position :: proc (
+	grid_position: [2]u16,
+	window_padding: [2]u32,
+	cell_height: f32,
+) -> (window_position: [2]u32){
+	cell_width: f32 = cell_height / 2
+
+	return [2]u32{
+		u32(f32(grid_position.x) * cell_width) + window_padding.x,
+		u32(f32(grid_position.y) * cell_height) + window_padding.y,
+	}
+}
+
 create_grid :: proc(dimensions: [2]u32, text_size: u16, padding: [2]u32) -> (grid: ^Grid) {
 	grid = new(Grid)
 	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
