@@ -5,6 +5,9 @@ import "core:os"
 import "core:strings"
 import "vendor:raylib"
 
+Grid_Vector :: [2]u16
+Window_Vector :: [2]u32
+
 Cell :: struct {
 	character: rune,
 	foreground_color: raylib.Color,
@@ -18,9 +21,9 @@ Row :: struct {
 
 // terminal contents and state
 Grid :: struct {
-	dimensions: [2]u16,
+	dimensions: Grid_Vector,
 	contents: [dynamic]Row,
-	cursor_position: [2]u16,
+	cursor_position: Grid_Vector,
 	screen_position: u16,
 }
 
@@ -34,8 +37,8 @@ Font_Info :: struct {
 
 Window :: struct {
 	title: string,
-	dimensions: [2]u32,
-	padding: [2]u32,
+	dimensions: Window_Vector,
+	padding: Window_Vector,
 }
 
 // main terminal structure
@@ -47,13 +50,13 @@ Terminal :: struct {
 
 // calculates the dimensions for the terminal grid
 calculate_grid_dimensions :: proc(
-	window_dimensions: [2]u32,
-	window_padding: [2]u32,
+	window_dimensions: Window_Vector,
+	window_padding: Window_Vector,
 	cell_height: f32,
-) -> (grid_dimensions: [2]u16) {
+) -> (grid_dimensions: Grid_Vector) {
 	cell_width: f32 = cell_height / 2
 
-	return [2]u16{
+	return Grid_Vector{
 		u16(math.floor(f32(window_dimensions.x - window_padding.x * 2) / cell_width)),
 		u16(math.floor(f32(window_dimensions.y - window_padding.y * 2) / cell_height)),
 	}
@@ -61,19 +64,19 @@ calculate_grid_dimensions :: proc(
 
 // converts grid position into pixel position
 calculate_window_position :: proc (
-	grid_position: [2]u16,
-	window_padding: [2]u32,
+	grid_position: Grid_Vector,
+	window_padding: Window_Vector,
 	cell_height: f32,
-) -> (window_position: [2]u32){
+) -> (window_position: Window_Vector){
 	cell_width: f32 = cell_height / 2
 
-	return [2]u32{
+	return Window_Vector{
 		u32(f32(grid_position.x) * cell_width) + window_padding.x,
 		u32(f32(grid_position.y) * cell_height) + window_padding.y,
 	}
 }
 
-create_grid :: proc(dimensions: [2]u32, text_size: u16, padding: [2]u32) -> (grid: ^Grid) {
+create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_Vector) -> (grid: ^Grid) {
 	grid = new(Grid)
 	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
 
@@ -125,10 +128,10 @@ destroy_font_info :: proc(font_info: ^Font_Info) {
 
 create_terminal :: proc(
 	title: string,
-	dimensions: [2]u32,
+	dimensions: Window_Vector,
 	font_name: string,
 	text_size: u16,
-	padding: [2]u32,
+	padding: Window_Vector,
 ) -> (terminal: ^Terminal, success: bool) {
 	terminal = new(Terminal)
 
