@@ -24,6 +24,7 @@ test_create_font_info :: proc(t: ^testing.T) {
 	defer interface.destroy_font_info(font_info)
 
 	testing.expect(t, success)
+	testing.expect_value(t, font_info.name, "tests/assets/CascadiaCode.ttf")
 	testing.expect_value(t, font_info.size, 12)
 	testing.expect_value(t, len(font_info.loaded_characters), 0)
 }
@@ -51,6 +52,7 @@ test_create_terminal :: proc(t: ^testing.T) {
 	testing.expect_value(t, terminal.grid.cursor_position, [2]u16{0, 0})
 	testing.expect_value(t, terminal.grid.screen_position, 0)
 
+	testing.expect_value(t, terminal.font_info.name, "tests/assets/CascadiaCode.ttf")
 	testing.expect_value(t, terminal.font_info.size, 12)
 	testing.expect_value(t, len(terminal.font_info.loaded_characters), 0)
 }

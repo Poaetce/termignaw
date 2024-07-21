@@ -29,6 +29,7 @@ Grid :: struct {
 
 // font and text related data
 Font_Info :: struct {
+	name: cstring,
 	data: []u8,
 	font: raylib.Font,
 	size: u16,
@@ -100,12 +101,11 @@ create_font_info :: proc(font_name: string, text_size: u16) -> (font_info: ^Font
 	}
 
 	// clone the font name as a cstring
-	font_name_cstring: cstring = strings.clone_to_cstring(font_name)
-	defer delete(font_name_cstring)
+	font_info.name = strings.clone_to_cstring(font_name)
 
 	// load font using the font data
 	font_info.font = raylib.LoadFontFromMemory(
-		raylib.GetFileExtension(font_name_cstring),
+		raylib.GetFileExtension(font_info.name),
 		raw_data(font_info.data),
 		i32(len(font_info.data)),
 		i32(text_size),
@@ -120,6 +120,7 @@ create_font_info :: proc(font_name: string, text_size: u16) -> (font_info: ^Font
 
 destroy_font_info :: proc(font_info: ^Font_Info) {
 	raylib.UnloadFont(font_info.font)
+	delete(font_info.name)
 	delete(font_info.data)
 	delete(font_info.loaded_characters)
 
