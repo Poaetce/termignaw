@@ -21,9 +21,12 @@ test_create_font_info :: proc(t: ^testing.T) {
 	success: bool
 	font_info: ^interface.Font_Info
 	font_info, success = interface.create_font_info(font_name, text_size)
-	defer interface.destroy_font_info(font_info)
 
 	testing.expect(t, success)
+
+	if !success {return}
+	defer interface.destroy_font_info(font_info)
+
 	testing.expect_value(t, font_info.name, "tests/assets/CascadiaCode.ttf")
 	testing.expect_value(t, font_info.size, 12)
 	testing.expect_value(t, len(font_info.loaded_characters), 0)
@@ -39,9 +42,11 @@ test_create_terminal :: proc(t: ^testing.T) {
 	success: bool
 	terminal: ^interface.Terminal
 	terminal, success = interface.create_terminal(title, dimensions, font_name, text_size, padding)
-	defer interface.destroy_terminal(terminal)
 
 	testing.expect(t, success)
+
+	if !success {return}
+	defer interface.destroy_terminal(terminal)
 
 	testing.expect_value(t, terminal.window.title, "Termignaw")
 	testing.expect_value(t, terminal.window.dimensions, [2]u32{1280, 720})
