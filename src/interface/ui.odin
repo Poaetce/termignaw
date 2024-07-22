@@ -77,6 +77,24 @@ calculate_window_position :: proc (
 	}
 }
 
+// loads font using the font data
+load_font :: proc(font_info: ^Font_Info) {
+	font_info.font = raylib.LoadFontFromMemory(
+		raylib.GetFileExtension(font_info.name),
+		raw_data(font_info.data),
+		i32(len(font_info.data)),
+		i32(font_info.size),
+		raw_data(font_info.loaded_characters),
+		i32(len(font_info.loaded_characters)),
+	)
+}
+
+// reloads the font with the updated details
+reload_font :: proc(font_info: ^Font_Info) {
+	raylib.UnloadFont(font_info.font)
+	load_font(font_info)
+}
+
 create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_Vector) -> (grid: ^Grid) {
 	grid = new(Grid)
 	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
@@ -103,17 +121,9 @@ create_font_info :: proc(font_name: string, text_size: u16) -> (font_info: ^Font
 	// clone the font name as a cstring
 	font_info.name = strings.clone_to_cstring(font_name)
 
-	// load font using the font data
-	font_info.font = raylib.LoadFontFromMemory(
-		raylib.GetFileExtension(font_info.name),
-		raw_data(font_info.data),
-		i32(len(font_info.data)),
-		i32(text_size),
-		raw_data(font_info.loaded_characters),
-		i32(len(font_info.loaded_characters)),
-	)
-
 	font_info.size = text_size
+
+	load_font(font_info)
 
 	return font_info, true
 }
