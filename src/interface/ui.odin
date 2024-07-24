@@ -123,8 +123,6 @@ create_font_info :: proc(font_name: string, text_size: u16) -> (font_info: ^Font
 
 	font_info.size = text_size
 
-	load_font(font_info)
-
 	return font_info, true
 }
 
@@ -178,4 +176,6 @@ open_window :: proc(terminal: ^Terminal) {
 		i32(terminal.window.dimensions.y),
 		window_title,
 	)
+
+	load_font(terminal.font_info)
 }
