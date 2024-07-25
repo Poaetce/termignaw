@@ -3,14 +3,30 @@ package main
 import "core:fmt"
 import "core:os"
 import "core:sys/linux"
+import "vendor:raylib"
 
 import "pseudoterminal"
+import "interface"
 
 BUFFER_SIZE: u16 : 1024
 
 main :: proc() {
-	pty: pseudoterminal.Pty
 	success: bool
+	terminal: ^interface.Terminal
+	terminal, success = interface.create_terminal(
+		"Termignaw",
+		{1280, 720},
+		"tests/assets/CascadiaCode.ttf",
+		12,
+		{10, 10},
+	)
+	if !success {return}
+
+	interface.open_window(terminal)
+	defer raylib.CloseWindow()
+	defer interface.destroy_terminal(terminal)
+
+	pty: pseudoterminal.Pty
 	pty, success = pseudoterminal.set_up_pty()
 	if !success {return}
 	defer pseudoterminal.close_pty(pty)
@@ -24,13 +40,19 @@ main :: proc() {
 
 	buffer: [BUFFER_SIZE]u8
 
-	for {
-		bytes_read: int
-		error: os.Errno
-		bytes_read, error = os.read(pty.master_fd, buffer[:])
-		if error == 11 {continue}
-		if error != 0 {break}
+	for !raylib.WindowShouldClose() {
+		{
+			raylib.BeginDrawing()
+				raylib.ClearBackground(raylib.RAYWHITE)
+			raylib.EndDrawing()
+		}
 
-		os.write(os.stdout, buffer[:bytes_read])
+		{
+			bytes_read: int
+			error: os.Errno
+			bytes_read, error = os.read(pty.master_fd, buffer[:])
+			if error == 11 {continue}
+			if error != 0 {break}
+		}
 	}
 }
