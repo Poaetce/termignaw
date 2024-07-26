@@ -96,12 +96,11 @@ start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, suc
 		// retrieve the environment as cstrings
 		environment_strings: []string = os2.environ(context.allocator)
 		defer delete(environment_strings)
-		environment: [dynamic]cstring
+		environment: []cstring = make([]cstring, len(environment_strings))
 		defer delete(environment)
-		for element in environment_strings {
+		for element, index in environment_strings {
 			element_cstring: cstring = strings.clone_to_cstring(element)
-			defer delete(element_cstring)
-			append(&environment, element_cstring)
+			environment[index] = element_cstring
 		}
 
 		// clone the shell name as a cstring
@@ -112,7 +111,7 @@ start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, suc
 		if linux.execve(
 			shell_name_cstring,
 			raw_data([]cstring{shell_name_cstring, nil}),
-			raw_data(environment[:]),
+			raw_data(environment),
 		) != nil {return 0, false}
 	}
 
