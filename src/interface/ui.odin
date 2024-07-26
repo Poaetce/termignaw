@@ -192,3 +192,33 @@ update_font_characters :: proc(strand: string, font_info: ^Font_Info) {
 
 	reload_font(font_info)
 }
+
+// draws an individual character cell
+draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
+	// calculate the pixel position
+	window_position: Window_Vector = calculate_window_position(
+		position,
+		terminal.window.padding,
+		f32(terminal.font_info.size),
+	)
+
+	// draw cell background as a rectangle
+	if cell.background_color != {} {
+		raylib.DrawRectangle(
+			i32(window_position.x),
+			i32(window_position.y),
+			i32(terminal.font_info.size) / 2,
+			i32(terminal.font_info.size),
+			cell.background_color,
+		)
+	}
+
+	// draw cell character
+	raylib.DrawTextCodepoint(
+		terminal.font_info.font,
+		cell.character,
+		[2]f32{f32(window_position.x), f32(window_position.y)},
+		f32(terminal.font_info.size),
+		cell.foreground_color,
+	)
+}
