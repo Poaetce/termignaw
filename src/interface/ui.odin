@@ -2,6 +2,7 @@ package interface
 
 import "core:math"
 import "core:os"
+import "core:slice"
 import "core:strings"
 import "vendor:raylib"
 
@@ -178,4 +179,16 @@ open_window :: proc(terminal: ^Terminal) {
 	)
 
 	load_font(terminal.font_info)
+}
+
+// adds new character and reloads font
+update_font_characters :: proc(strand: string, font_info: ^Font_Info) {
+	// add new characters to font_info.loaded_characters
+	for character in strand {
+		if !slice.contains(font_info.loaded_characters[:], character) {
+			append(&font_info.loaded_characters, character)
+		}
+	}
+
+	reload_font(font_info)
 }
