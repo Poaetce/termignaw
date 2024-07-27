@@ -37,7 +37,8 @@ test_create_grid :: proc(t: ^testing.T) {
 	defer interface.destroy_grid(grid)
 
 	testing.expect_value(t, grid.dimensions, [2]u16{210, 58})
-	testing.expect_value(t, len(grid.contents), 0)
+	testing.expect_value(t, len(grid.contents), 58)
+	testing.expect_value(t, len(grid.contents[0].cells), 210)
 	testing.expect_value(t, grid.cursor_position, [2]u16{0, 0})
 	testing.expect_value(t, grid.screen_position, 0)
 }
@@ -83,7 +84,8 @@ test_create_terminal :: proc(t: ^testing.T) {
 	testing.expect_value(t, terminal.window.padding, [2]u32{10, 10})
 
 	testing.expect_value(t, terminal.grid.dimensions, [2]u16{210, 58})
-	testing.expect_value(t, len(terminal.grid.contents), 0)
+	testing.expect_value(t, len(terminal.grid.contents), 58)
+	testing.expect_value(t, len(terminal.grid.contents[0].cells), 210)
 	testing.expect_value(t, terminal.grid.cursor_position, [2]u16{0, 0})
 	testing.expect_value(t, terminal.grid.screen_position, 0)
 

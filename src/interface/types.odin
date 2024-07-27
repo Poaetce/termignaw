@@ -48,14 +48,25 @@ Terminal :: struct {
 	font_info: ^Font_Info,
 }
 
+create_row :: proc(length: u16) -> (row: Row) {
+	row.cells = make([]Cell, int(length))
+	return row
+}
+
 create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_Vector) -> (grid: ^Grid) {
 	grid = new(Grid)
 	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
+
+	for index in 0..<grid.dimensions.y {
+		append(&grid.contents, create_row(grid.dimensions.x))
+	}
 
 	return grid
 }
 
 destroy_grid :: proc(grid: ^Grid) {
+	for row in grid.contents {delete(row.cells)}
+
 	delete(grid.contents)
 
 	free(grid)
