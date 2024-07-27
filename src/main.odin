@@ -15,10 +15,10 @@ main :: proc() {
 	terminal: ^interface.Terminal
 	terminal, success = interface.create_terminal(
 		"Termignaw",
-		{1280, 720},
+		[2]u32{1280, 720},
 		"tests/assets/CascadiaCode.ttf",
 		12,
-		{10, 10},
+		[2]u32{10, 10},
 	)
 	if !success {return}
 
