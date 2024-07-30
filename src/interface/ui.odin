@@ -103,30 +103,42 @@ draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
 	)
 }
 
+// moves cursor to the next cell
+increment_cursor :: proc(grid: ^Grid) {
+	if is_cursor_at_edge(grid) {
+		// creates a new row if needed
+		if is_cursor_at_last_row(grid) {new_row(grid)}
+
+		// wrap cursor to next row
+		grid.contents[grid.cursor_position.y].wrapping = true
+		grid.cursor_position.y += 1
+		grid.cursor_position.x = 0
+	} else {
+		// increment cursor
+		grid.cursor_position.x += 1
+	}
+}
+
 // maps a strand of text onto the grid
 map_strand :: proc(strand: string, grid: ^Grid) {
 	for character in strand {
-		// create a cell
-		cell: Cell
-		cell.character = character
-		cell.foreground_color = raylib.BLACK
-		cell.background_color = raylib.WHITE
-
-		// set current cell to the new cell
-		grid.contents[grid.cursor_position.y].cells[grid.cursor_position.x] = cell
-
-		// update cursor position
-		if is_cursor_at_edge(grid) {
-			// creates a new row if needed
-			if is_cursor_at_last_row(grid) {new_row(grid)}
-
-			// wrap cursor to next row
-			grid.contents[grid.cursor_position.y].wrapping = true
+		// match character for special characters
+		switch character {
+		case '\n':
 			grid.cursor_position.y += 1
 			grid.cursor_position.x = 0
-		} else {
-			// increment cursor
-			grid.cursor_position.x += 1
+		case:
+			// create a cell
+			cell: Cell
+			cell.character = character
+			cell.foreground_color = raylib.BLACK
+			cell.background_color = raylib.WHITE
+
+			// set current cell to the new cell
+			grid.contents[grid.cursor_position.y].cells[grid.cursor_position.x] = cell
+
+			// update cursor position
+			increment_cursor(grid)
 		}
 	}
 }
