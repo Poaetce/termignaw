@@ -4,6 +4,16 @@ import "core:slice"
 import "core:strings"
 import "vendor:raylib"
 
+// checks if cursor is at or over the end of the row
+is_cursor_at_edge :: proc(grid: ^Grid) -> (bool) {
+	return grid.cursor_position.x + 1 >= grid.dimensions.x
+}
+
+// checks if cursor is at the last row
+is_cursor_at_last_row :: proc(grid: ^Grid) -> (bool) {
+	return grid.cursor_position.y + 1 >= u16(len(grid.contents))
+}
+
 // creates and appends a new row to the grid
 new_row :: proc(grid: ^Grid) {
 	append(&grid.contents, create_row(grid.dimensions.x))
@@ -81,4 +91,29 @@ draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
 		f32(terminal.font_info.size),
 		cell.foreground_color,
 	)
+}
+
+// maps a strand of text onto the grid
+map_strand :: proc(strand: string, grid: ^Grid) {
+	for character in strand {
+		// create a cell
+		cell: Cell
+		cell.character = character
+
+		// set current cell to the new cell
+		grid.contents[grid.cursor_position.y].cells[grid.cursor_position.x] = cell
+
+		// update cursor position
+		if is_cursor_at_edge(grid) {
+			// creates a new row if needed
+			if is_cursor_at_last_row(grid) {new_row(grid)}
+
+			// wrap cursor to next row
+			grid.contents[grid.cursor_position.y].wrapping = true
+			grid.cursor_position += Grid_Vector{0, 1}
+		} else {
+			// increment cursor
+			grid.cursor_position += Grid_Vector{1, 0}
+		}
+	}
 }
