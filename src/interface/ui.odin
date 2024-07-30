@@ -53,14 +53,18 @@ open_window :: proc(terminal: ^Terminal) {
 
 // adds new character and reloads font
 update_font_characters :: proc(strand: string, font_info: ^Font_Info) {
+	contains_new_character: bool = false
+
 	// add new characters to font_info.loaded_characters
 	for character in strand {
 		if !slice.contains(font_info.loaded_characters[:], character) {
+			contains_new_character = true
+
 			append(&font_info.loaded_characters, character)
 		}
 	}
 
-	reload_font(font_info)
+	if contains_new_character {reload_font(font_info)}
 }
 
 // draws an individual character cell
