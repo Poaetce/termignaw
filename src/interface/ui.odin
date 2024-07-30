@@ -69,6 +69,7 @@ update_font_characters :: proc(strand: string, font_info: ^Font_Info) {
 
 // draws an individual character cell
 draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
+	// exit procedure if the character isn't loaded
 	if !slice.contains(
 		terminal.font_info.loaded_characters[:],
 		cell.character,
