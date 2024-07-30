@@ -4,6 +4,11 @@ import "core:slice"
 import "core:strings"
 import "vendor:raylib"
 
+// creates and appends a new row to the grid
+new_row :: proc(grid: ^Grid) {
+	append(&grid.contents, create_row(grid.dimensions.x))
+}
+
 // loads font using the font data
 load_font :: proc(font_info: ^Font_Info) {
 	font_info.font = raylib.LoadFontFromMemory(

@@ -57,8 +57,9 @@ create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_V
 	grid = new(Grid)
 	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
 
+	// fill grid with empty cells
 	for index in 0..<grid.dimensions.y {
-		append(&grid.contents, create_row(grid.dimensions.x))
+		new_row(grid)
 	}
 
 	return grid
