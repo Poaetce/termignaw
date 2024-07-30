@@ -123,3 +123,12 @@ map_strand :: proc(strand: string, grid: ^Grid) {
 		}
 	}
 }
+
+// renders all cells in the terminal grid
+render_grid :: proc(terminal: ^Terminal) {
+	for row, y in terminal.grid.contents {
+		for cell, x in row.cells {
+			draw_cell(cell, Grid_Vector{u16(x), u16(y)}, terminal)
+		}
+	}
+}
