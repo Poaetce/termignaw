@@ -99,6 +99,8 @@ map_strand :: proc(strand: string, grid: ^Grid) {
 		// create a cell
 		cell: Cell
 		cell.character = character
+		cell.foreground_color = raylib.BLACK
+		cell.background_color = raylib.WHITE
 
 		// set current cell to the new cell
 		grid.contents[grid.cursor_position.y].cells[grid.cursor_position.x] = cell
