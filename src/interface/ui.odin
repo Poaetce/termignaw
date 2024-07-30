@@ -69,6 +69,11 @@ update_font_characters :: proc(strand: string, font_info: ^Font_Info) {
 
 // draws an individual character cell
 draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
+	if !slice.contains(
+		terminal.font_info.loaded_characters[:],
+		cell.character,
+	) {return}
+
 	// calculate the pixel position
 	window_position: Window_Vector = calculate_window_position(
 		position,
