@@ -116,10 +116,11 @@ map_strand :: proc(strand: string, grid: ^Grid) {
 
 			// wrap cursor to next row
 			grid.contents[grid.cursor_position.y].wrapping = true
-			grid.cursor_position += Grid_Vector{0, 1}
+			grid.cursor_position.y += 1
+			grid.cursor_position.x = 0
 		} else {
 			// increment cursor
-			grid.cursor_position += Grid_Vector{1, 0}
+			grid.cursor_position.x += 1
 		}
 	}
 }
