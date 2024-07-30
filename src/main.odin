@@ -17,7 +17,7 @@ main :: proc() {
 		"Termignaw",
 		[2]u32{1280, 720},
 		"tests/assets/CascadiaCode.ttf",
-		12,
+		50,
 		[2]u32{10, 10},
 	)
 	if !success {return}
@@ -43,7 +43,9 @@ main :: proc() {
 	for !raylib.WindowShouldClose() {
 		{
 			raylib.BeginDrawing()
-				raylib.ClearBackground(raylib.RAYWHITE)
+				raylib.ClearBackground(raylib.WHITE)
+
+				interface.render_grid(terminal)
 			raylib.EndDrawing()
 		}
 
