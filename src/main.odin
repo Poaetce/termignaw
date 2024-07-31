@@ -55,6 +55,9 @@ main :: proc() {
 			bytes_read, error = os.read(pty.master_fd, buffer[:])
 			if error == 11 {continue}
 			if error != 0 {break}
+
+			buffer_strand := string(buffer[:])
+			interface.map_strand(buffer_strand, terminal)
 		}
 	}
 }
