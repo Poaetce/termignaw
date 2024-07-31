@@ -140,8 +140,8 @@ map_character :: proc(character: rune, grid: ^Grid) {
 		// set current cell to the new cell
 		grid.contents[grid.cursor_position.y].cells[grid.cursor_position.x] = cell
 
-			// update cursor position
-			increment_cursor(grid)
+		// update cursor position
+		increment_cursor(grid)
 	}
 }
 
