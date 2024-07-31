@@ -51,22 +51,6 @@ open_window :: proc(terminal: ^Terminal) {
 	load_font(terminal.font_info)
 }
 
-// adds new character and reloads font
-update_font_characters :: proc(strand: string, font_info: ^Font_Info) {
-	contains_new_character: bool = false
-
-	// add new characters to font_info.loaded_characters
-	for character in strand {
-		if !slice.contains(font_info.loaded_characters[:], character) {
-			contains_new_character = true
-
-			append(&font_info.loaded_characters, character)
-		}
-	}
-
-	if contains_new_character {reload_font(font_info)}
-}
-
 // draws an individual character cell
 draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
 	// exit procedure if the character isn't loaded
@@ -120,26 +104,44 @@ increment_cursor :: proc(grid: ^Grid) {
 }
 
 // maps a strand of text onto the grid
-map_strand :: proc(strand: string, grid: ^Grid) {
-	for character in strand {
-		// match character for special characters
-		switch character {
-		case '\n':
-			grid.cursor_position.y += 1
-			grid.cursor_position.x = 0
-		case:
-			// create a cell
-			cell: Cell
-			cell.character = character
-			cell.foreground_color = raylib.BLACK
-			cell.background_color = raylib.WHITE
+map_strand :: proc(strand: string, terminal: ^Terminal) {
+	contains_new_character: bool = false
 
-			// set current cell to the new cell
-			grid.contents[grid.cursor_position.y].cells[grid.cursor_position.x] = cell
+	for character in strand {
+		map_character(character, terminal.grid)
+
+		// add new characters to font_info.loaded_characters
+		if !slice.contains(terminal.font_info.loaded_characters[:], character) {
+			contains_new_character = true
+
+			append(&terminal.font_info.loaded_characters, character)
+		}
+	}
+
+	// reloads font if the strand contains new characters
+	if contains_new_character {reload_font(terminal.font_info)}
+}
+
+// maps a character onto the grid
+map_character :: proc(character: rune, grid: ^Grid) {
+	// match character for special characters
+	switch character {
+	case '\n':
+		grid.cursor_position.y += 1
+		grid.cursor_position.x = 0
+
+	case:
+		// create a cell
+		cell: Cell
+		cell.character = character
+		cell.foreground_color = raylib.BLACK
+		cell.background_color = raylib.WHITE
+
+		// set current cell to the new cell
+		grid.contents[grid.cursor_position.y].cells[grid.cursor_position.x] = cell
 
 			// update cursor position
 			increment_cursor(grid)
-		}
 	}
 }
 
