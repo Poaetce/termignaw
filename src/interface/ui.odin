@@ -127,6 +127,9 @@ map_character :: proc(character: rune, grid: ^Grid) {
 	// match character for special characters
 	switch character {
 	case '\n':
+		// creates a new row if needed
+		if is_cursor_at_last_row(grid) {new_row(grid)}
+
 		grid.cursor_position.y += 1
 		grid.cursor_position.x = 0
 
