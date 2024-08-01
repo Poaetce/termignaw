@@ -17,6 +17,7 @@ is_cursor_at_last_row :: proc(grid: ^Grid) -> (bool) {
 // creates and appends a new row to the grid
 new_row :: proc(grid: ^Grid) {
 	append(&grid.contents, create_row(grid.dimensions.x))
+	scroll_screen(1, grid)
 }
 
 // loads font using the font data
