@@ -43,10 +43,11 @@ main :: proc() {
 	for !raylib.WindowShouldClose() {
 		{
 			raylib.BeginDrawing()
-				raylib.ClearBackground(raylib.WHITE)
+			defer raylib.EndDrawing()
 
-				interface.render_grid(terminal)
-			raylib.EndDrawing()
+			raylib.ClearBackground(raylib.WHITE)
+
+			interface.render_grid(terminal)
 		}
 
 		{
