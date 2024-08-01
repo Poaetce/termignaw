@@ -17,7 +17,7 @@ calculate_grid_dimensions :: proc(
 }
 
 // converts grid position into pixel position
-calculate_window_position :: proc (
+calculate_window_position :: proc(
 	grid_position: Grid_Vector,
 	window_padding: Window_Vector,
 	cell_height: f32,
