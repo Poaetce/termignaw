@@ -56,7 +56,7 @@ main :: proc() {
 			if error == 11 {continue}
 			if error != 0 {break}
 
-			buffer_strand := string(buffer[:])
+			buffer_strand := string(buffer[:bytes_read])
 			interface.map_strand(buffer_strand, terminal)
 		}
 	}
