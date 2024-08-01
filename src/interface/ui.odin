@@ -156,3 +156,19 @@ render_grid :: proc(terminal: ^Terminal) {
 		}
 	}
 }
+
+// moves the screen_position by an amount
+scroll_screen :: proc(amount: i32 , grid: ^Grid) {
+	// calulate the target position
+	target_position: i32 = i32(grid.screen_position) + amount
+
+	// clamps the position between 0 and the grid's maximum
+	switch {
+	case target_position < 0:
+		grid.screen_position = 0
+	case target_position > i32(calculate_maximum_screen_position(grid.dimensions, u16(len(grid.contents)))):
+		grid.screen_position = calculate_maximum_screen_position(grid.dimensions, u16(len(grid.contents)))
+	case:
+		grid.screen_position = u16(target_position)
+	}
+}

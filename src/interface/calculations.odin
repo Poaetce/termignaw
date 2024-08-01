@@ -29,3 +29,11 @@ calculate_window_position :: proc (
 		u32(f32(grid_position.y) * cell_height) + window_padding.y,
 	}
 }
+
+// calculates the maximum possible screen position
+calculate_maximum_screen_position :: proc(
+	grid_dimensions: Grid_Vector,
+	row_count: u16,
+) -> (screen_position: u16) {
+	return row_count - grid_dimensions.y
+}
