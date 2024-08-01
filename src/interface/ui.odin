@@ -132,7 +132,6 @@ map_character :: proc(character: rune, grid: ^Grid) {
 
 		grid.cursor_position.y += 1
 		grid.cursor_position.x = 0
-
 	case:
 		// create a cell
 		cell: Cell
