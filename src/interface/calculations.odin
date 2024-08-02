@@ -37,3 +37,8 @@ calculate_maximum_screen_position :: proc(
 ) -> (screen_position: u16) {
 	return row_count - grid_dimensions.y
 }
+
+// calculates the next multiple of a number
+round_to_next_multiple :: proc(number: u16, multiple: u16) -> (result: u16) {
+	return number + (multiple - number % multiple)
+}
