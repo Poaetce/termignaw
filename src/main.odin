@@ -3,6 +3,7 @@ package main
 import "core:fmt"
 import "core:os"
 import "core:sys/linux"
+import "core:unicode/utf8"
 import "vendor:raylib"
 
 import "pseudoterminal"
@@ -51,6 +52,27 @@ main :: proc() {
 		}
 
 		{
+			for
+				character: rune = raylib.GetCharPressed();
+				character > 0;
+				character = raylib.GetCharPressed()
+			{
+				write_character(character, pty)
+			}
+
+			for
+				key: raylib.KeyboardKey = raylib.GetKeyPressed();
+				key != .KEY_NULL;
+				key = raylib.GetKeyPressed()
+			{
+				#partial switch key {
+				case .ENTER:
+					write_character('\n', pty)
+				case .BACKSPACE:
+					write_character('\b', pty)
+				}
+			}
+
 			bytes_read: int
 			error: os.Errno
 			bytes_read, error = os.read(pty.master_fd, buffer[:])
@@ -61,4 +83,15 @@ main :: proc() {
 			interface.map_strand(buffer_strand, terminal)
 		}
 	}
+}
+
+// writes a charater to the pseudoterminal
+write_character :: proc(character: rune, pty: pseudoterminal.Pty) {
+	// encode the character into bytes
+	bytes: [4]u8
+	size: int
+	bytes, size = utf8.encode_rune(character)
+
+	// writes bytes to the master device
+	os.write(pty.master_fd, bytes[:size])
 }
