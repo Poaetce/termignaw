@@ -74,10 +74,10 @@ main :: proc() {
 			}
 
 			bytes_read: int
-			error: os.Errno
+			error: os.Error
 			bytes_read, error = os.read(pty.master_fd, buffer[:])
-			if error == 11 {continue}
-			if error != 0 {break}
+			if error == .EAGAIN {continue}
+			if error != nil {break}
 
 			buffer_strand := string(buffer[:bytes_read])
 			interface.map_strand(buffer_strand, terminal)
