@@ -17,7 +17,6 @@ is_cursor_at_last_row :: proc(grid: ^Grid) -> (bool) {
 // creates and appends a new row to the grid
 new_row :: proc(grid: ^Grid) {
 	append(&grid.contents, create_row(grid.dimensions.x))
-	scroll_screen(1, grid)
 }
 
 // loads font using the font data
@@ -92,7 +91,10 @@ draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
 increment_cursor :: proc(grid: ^Grid) {
 	if is_cursor_at_edge(grid) {
 		// creates a new row if needed
-		if is_cursor_at_last_row(grid) {new_row(grid)}
+		if is_cursor_at_last_row(grid) {
+			new_row(grid)
+			scroll_screen(1, grid)
+		}
 
 		// wrap cursor to next row
 		grid.contents[grid.cursor_position.y].wrapping = true
@@ -129,7 +131,10 @@ map_character :: proc(character: rune, grid: ^Grid) {
 	switch character {
 	case '\n':
 		// creates a new row if needed
-		if is_cursor_at_last_row(grid) {new_row(grid)}
+		if is_cursor_at_last_row(grid) {
+			new_row(grid)
+			scroll_screen(1, grid)
+		}
 
 		grid.cursor_position.y += 1
 		grid.cursor_position.x = 0
