@@ -179,3 +179,48 @@ scroll_screen :: proc(amount: i32 , grid: ^Grid) {
 		grid.screen_position = u16(target_position)
 	}
 }
+
+resize_terminal :: proc(target_dimensions: Window_Vector, terminal: ^Terminal) {
+	terminal.window.dimensions = target_dimensions
+
+	target_grid_dimensions: Grid_Vector = calculate_grid_dimensions(
+		target_dimensions,
+		terminal.window.padding,
+		f32(terminal.font_info.size),
+	)
+	resize_grid(target_grid_dimensions, terminal.grid)
+}
+
+resize_grid :: proc(target_dimensions: Grid_Vector, grid: ^Grid) {
+	grid.dimensions = target_dimensions
+
+	for &row in grid.contents {
+		switch {
+		case target_dimensions.x > u16(len(row.cells)):
+			new_cells: []Cell = make([]Cell, int(grid.dimensions.x))
+
+			for cell, index in row.cells {
+				new_cells[index] = cell
+			}
+
+			delete(row.cells)
+			row.cells = new_cells
+		case target_dimensions.x < u16(len(row.cells)):
+			new_cells: []Cell = make([]Cell, int(grid.dimensions.x))
+
+			for &new_cell, index in new_cells {
+				new_cell = row.cells[index]
+			}
+
+			delete(row.cells)
+			row.cells = new_cells
+		}
+	}
+
+	row_increase: int = int(target_dimensions.y) - len(grid.contents)
+	if row_increase > 0 {
+		for index in 0..=row_increase {
+			new_row(grid)
+		}
+	}
+}
