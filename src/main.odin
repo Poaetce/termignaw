@@ -23,6 +23,10 @@ main :: proc() {
 	)
 	if !success {return}
 
+	raylib.SetConfigFlags({
+		.WINDOW_RESIZABLE,
+	})
+
 	interface.open_window(terminal)
 	defer raylib.CloseWindow()
 	defer interface.destroy_terminal(terminal)
@@ -52,6 +56,14 @@ main :: proc() {
 		}
 
 		{
+			if raylib.IsWindowResized() {
+				dimensions := [2]u32{
+					u32(raylib.GetScreenWidth()),
+					u32(raylib.GetScreenHeight()),
+				}
+				interface.resize_terminal(dimensions, terminal)
+			}
+
 			for
 				character: rune = raylib.GetCharPressed();
 				character > 0;
