@@ -5,12 +5,12 @@ import "core:os/os2"
 import "core:strings"
 import "core:sys/linux"
 
-foreign import libc "system:c"
-foreign libc {
-	posix_openpt :: proc(flags: i32) -> i32 ---
-	grantpt :: proc(fd: i32) -> i32 ---
-	unlockpt :: proc(fd: i32) -> i32 ---
-	ptsname :: proc(fd: i32) -> cstring ---
+foreign import "system:c"
+foreign c {
+	posix_openpt :: proc(flags: i32) -> (i32) ---
+	grantpt :: proc(fd: i32) -> (i32) ---
+	unlockpt :: proc(fd: i32) -> (i32) ---
+	ptsname :: proc(fd: i32) -> (cstring) ---
 }
 
 // file descriptors for the opened pseudoterminal devices
