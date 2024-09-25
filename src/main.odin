@@ -8,6 +8,7 @@ import "vendor:raylib"
 
 import "pseudoterminal"
 import "interface"
+import "configuration"
 
 BUFFER_SIZE: u16 : 1024
 
