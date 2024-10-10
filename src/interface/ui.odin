@@ -138,6 +138,8 @@ map_character :: proc(character: rune, grid: ^Grid) {
 
 		grid.cursor_position.y += 1
 		grid.cursor_position.x = 0
+	case '\r':
+		grid.cursor_position.x = 0
 	case '\t':
 		grid.cursor_position.x = round_to_next_multiple(grid.cursor_position.x, 4)
 	case:
