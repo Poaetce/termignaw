@@ -86,7 +86,7 @@ destroy_grid :: proc(grid: ^Grid) {
 	free(grid)
 }
 
-create_font_info :: proc(font_name: string, text_size: u16) -> (font_info: ^Font_Info, success: bool) {
+create_font_info :: proc(font_name: string) -> (font_info: ^Font_Info, success: bool) {
 	font_info = new(Font_Info)
 
 	// read the data from the font file
@@ -98,8 +98,6 @@ create_font_info :: proc(font_name: string, text_size: u16) -> (font_info: ^Font
 
 	// clone the font name as a cstring
 	font_info.name = strings.clone_to_cstring(font_name)
-
-	font_info.size = text_size
 
 	return font_info, true
 }
