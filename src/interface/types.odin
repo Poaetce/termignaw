@@ -137,7 +137,12 @@ create_font_group :: proc(
 create_terminal :: proc(
 	title: string,
 	dimensions: Window_Vector,
-	font_name: string,
+	font_names: struct {
+		normal: string,
+		bold: string,
+		italic: string,
+		bold_italic: string,
+	},
 	text_size: u16,
 	padding: Window_Vector,
 ) -> (terminal: ^Terminal, success: bool) {
@@ -147,7 +152,7 @@ create_terminal :: proc(
 	terminal.window.dimensions = dimensions
 	terminal.window.padding = padding
 
-	terminal.font_info, success = create_font_info(font_name, text_size)
+	terminal.font_group, success = create_font_group(font_names, text_size)
 	if !success {
 		free(terminal)
 		return nil, false
@@ -160,7 +165,10 @@ create_terminal :: proc(
 
 destroy_terminal :: proc(terminal: ^Terminal) {
 	destroy_grid(terminal.grid)
-	destroy_font_info(terminal.font_info)
+
+	for _, index in Font_Variant {
+		destroy_font_info(terminal.font_group.variants[index])
+	}
 
 	free(terminal)
 }
