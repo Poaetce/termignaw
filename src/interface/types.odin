@@ -7,6 +7,14 @@ import "vendor:raylib"
 Grid_Vector :: [2]u16
 Window_Vector :: [2]u32
 
+// variant of a font
+Font_Variant :: enum {
+	Normal,
+	Bold,
+	Italic,
+	Bold_Italic,
+}
+
 Cell :: struct {
 	character: rune,
 	foreground_color: raylib.Color,
@@ -31,8 +39,13 @@ Font_Info :: struct {
 	name: cstring,
 	data: []u8,
 	font: raylib.Font,
-	size: u16,
 	loaded_characters: [dynamic]rune,
+}
+
+// data for a group of font
+Font_Group :: struct {
+	size: u16,
+	variants: [4]^Font_Info,
 }
 
 Window :: struct {
@@ -45,7 +58,7 @@ Window :: struct {
 Terminal :: struct {
 	window: Window,
 	grid: ^Grid,
-	font_info: ^Font_Info,
+	font_group: Font_Group,
 }
 
 create_row :: proc(length: u16) -> (row: Row) {
