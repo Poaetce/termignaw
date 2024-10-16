@@ -111,6 +111,29 @@ destroy_font_info :: proc(font_info: ^Font_Info) {
 	free(font_info)
 }
 
+create_font_group :: proc(
+	font_names: struct {
+		normal: string,
+		bold: string,
+		italic: string,
+		bold_italic: string,
+	},
+	text_size: u16,
+) -> (font_group: Font_Group, success:bool)
+{
+	font_group.size = text_size
+
+	// transmute font_names struct to an array to be indexed
+	font_names_array: [4]string = transmute([4]string)font_names
+
+	// create Font_Info for each variant
+	for _, index in Font_Variant {
+		font_group.variants[index] = create_font_info(font_names_array[index]) or_return
+	}
+
+	return font_group, true
+}
+
 create_terminal :: proc(
 	title: string,
 	dimensions: Window_Vector,
