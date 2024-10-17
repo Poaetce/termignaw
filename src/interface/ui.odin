@@ -19,6 +19,13 @@ new_row :: proc(grid: ^Grid) {
 	append(&grid.contents, create_row(grid.dimensions.x))
 }
 
+// loads all font variants
+load_font_group :: proc(font_group: Font_Group) {
+	for variant in font_group.variants {
+		load_font(variant, font_group.size)
+	}
+}
+
 // loads font using the font data
 load_font :: proc(font_info: ^Font_Info, font_size: u16) {
 	font_info.font = raylib.LoadFontFromMemory(
