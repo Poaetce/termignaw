@@ -8,7 +8,7 @@ Grid_Vector :: [2]u16
 Window_Vector :: [2]u32
 
 // variant of a font
-Font_Variant :: enum {
+Font_Variant :: enum u8 {
 	Normal,
 	Bold,
 	Italic,
