@@ -19,22 +19,29 @@ new_row :: proc(grid: ^Grid) {
 	append(&grid.contents, create_row(grid.dimensions.x))
 }
 
+// loads all font variants
+load_font_group :: proc(font_group: Font_Group) {
+	for variant in font_group.variants {
+		load_font(variant, font_group.size)
+	}
+}
+
 // loads font using the font data
-load_font :: proc(font_info: ^Font_Info) {
+load_font :: proc(font_info: ^Font_Info, font_size: u16) {
 	font_info.font = raylib.LoadFontFromMemory(
 		raylib.GetFileExtension(font_info.name),
 		raw_data(font_info.data),
 		i32(len(font_info.data)),
-		i32(font_info.size),
+		i32(font_size),
 		raw_data(font_info.loaded_characters),
 		i32(len(font_info.loaded_characters)),
 	)
 }
 
 // reloads the font with the updated details
-reload_font :: proc(font_info: ^Font_Info) {
+reload_font :: proc(font_info: ^Font_Info, font_size: u16) {
 	raylib.UnloadFont(font_info.font)
-	load_font(font_info)
+	load_font(font_info, font_size)
 }
 
 // initialises and opens the terminal window
@@ -48,14 +55,16 @@ open_window :: proc(terminal: ^Terminal) {
 		window_title,
 	)
 
-	load_font(terminal.font_info)
+	load_font_group(terminal.font_group)
 }
 
 // draws an individual character cell
 draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
+	font_info: ^Font_Info = terminal.font_group.variants[cell.variant]
+
 	// exit procedure if the character isn't loaded
 	if !slice.contains(
-		terminal.font_info.loaded_characters[:],
+		font_info.loaded_characters[:],
 		cell.character,
 	) {return}
 
@@ -63,7 +72,7 @@ draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
 	window_position: Window_Vector = calculate_window_position(
 		position,
 		terminal.window.padding,
-		f32(terminal.font_info.size),
+		f32(terminal.font_group.size),
 	)
 
 	// draw cell background as a rectangle
@@ -71,18 +80,18 @@ draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
 		raylib.DrawRectangle(
 			i32(window_position.x),
 			i32(window_position.y),
-			i32(terminal.font_info.size) / 2,
-			i32(terminal.font_info.size),
+			i32(terminal.font_group.size) / 2,
+			i32(terminal.font_group.size),
 			cell.background_color,
 		)
 	}
 
 	// draw cell character
 	raylib.DrawTextCodepoint(
-		terminal.font_info.font,
+		font_info.font,
 		cell.character,
 		[2]f32{f32(window_position.x), f32(window_position.y)},
-		f32(terminal.font_info.size),
+		f32(terminal.font_group.size),
 		cell.foreground_color,
 	)
 }
@@ -108,21 +117,23 @@ increment_cursor :: proc(grid: ^Grid) {
 
 // maps a strand of text onto the grid
 map_strand :: proc(strand: string, terminal: ^Terminal) {
+	font_info: ^Font_Info = terminal.font_group.variants[Font_Variant.Normal]
+
 	contains_new_character: bool = false
 
 	for character in strand {
 		map_character(character, terminal.grid)
 
 		// add new characters to font_info.loaded_characters
-		if !slice.contains(terminal.font_info.loaded_characters[:], character) {
+		if !slice.contains(font_info.loaded_characters[:], character) {
 			contains_new_character = true
 
-			append(&terminal.font_info.loaded_characters, character)
+			append(&font_info.loaded_characters, character)
 		}
 	}
 
 	// reloads font if the strand contains new characters
-	if contains_new_character {reload_font(terminal.font_info)}
+	if contains_new_character {reload_font(font_info, terminal.font_group.size)}
 }
 
 // maps a character onto the grid
@@ -191,7 +202,7 @@ resize_terminal :: proc(target_dimensions: Window_Vector, terminal: ^Terminal) {
 	target_grid_dimensions: Grid_Vector = calculate_grid_dimensions(
 		target_dimensions,
 		terminal.window.padding,
-		f32(terminal.font_info.size),
+		f32(terminal.font_group.size),
 	)
 
 	// resize the grid to the new dimensions
