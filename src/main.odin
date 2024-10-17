@@ -18,7 +18,12 @@ main :: proc() {
 	terminal, success = interface.create_terminal(
 		"Termignaw",
 		[2]u32{1280, 720},
-		"tests/assets/CascadiaCode.ttf",
+		{
+			"tests/assets/CascadiaCodeNF-Regular.ttf",
+			"tests/assets/CascadiaCodeNF-Bold.ttf",
+			"tests/assets/CascadiaCodeNF-Italic.ttf",
+			"tests/assets/CascadiaCodeNF-BoldItalic.ttf",
+		},
 		50,
 		[2]u32{10, 10},
 	)
