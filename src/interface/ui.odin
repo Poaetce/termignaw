@@ -157,8 +157,8 @@ map_character :: proc(character: rune, grid: ^Grid) {
 		// create a cell
 		cell: Cell
 		cell.character = character
-		cell.foreground_color = raylib.BLACK
-		cell.background_color = raylib.WHITE
+		cell.foreground_color = grid.cursor.foreground_color
+		cell.background_color = grid.cursor.background_color
 
 		// set current cell to the new cell
 		grid.contents[grid.cursor.position.y].cells[grid.cursor.position.x] = cell
