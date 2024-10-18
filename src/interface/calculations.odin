@@ -30,11 +30,11 @@ calculate_window_position :: proc(
 	}
 }
 
-// calculates the maximum possible screen position
-calculate_maximum_screen_position :: proc(
+// calculates the maximum possible screen scroll
+calculate_maximum_screen_scroll :: proc(
 	grid_dimensions: Grid_Vector,
 	row_count: u16,
-) -> (screen_position: u16) {
+) -> (screen_scroll: u16) {
 	return row_count - grid_dimensions.y
 }
 

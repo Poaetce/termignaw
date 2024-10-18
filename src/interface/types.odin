@@ -32,7 +32,7 @@ Grid :: struct {
 	dimensions: Grid_Vector,
 	contents: [dynamic]Row,
 	cursor_position: Grid_Vector,
-	screen_position: u16,
+	screen_scroll: u16,
 }
 
 // font and text related data
