@@ -170,26 +170,26 @@ map_character :: proc(character: rune, grid: ^Grid) {
 
 // renders all cells in the terminal grid
 render_grid :: proc(terminal: ^Terminal) {
-	for row, y in terminal.grid.contents[terminal.grid.screen_position:][:terminal.grid.dimensions.y] {
+	for row, y in terminal.grid.contents[terminal.grid.screen_scroll:][:terminal.grid.dimensions.y] {
 		for cell, x in row.cells {
 			draw_cell(cell, Grid_Vector{u16(x), u16(y)}, terminal)
 		}
 	}
 }
 
-// moves the screen_position by an amount
+// moves the screen_scroll by an amount
 scroll_screen :: proc(amount: i32 , grid: ^Grid) {
 	// calulate the target position
-	target_position: i32 = i32(grid.screen_position) + amount
+	target_scroll: i32 = i32(grid.screen_scroll) + amount
 
-	// clamps the position between 0 and the grid's maximum
+	// clamps the scroll between 0 and the grid's maximum
 	switch {
-	case target_position < 0:
-		grid.screen_position = 0
-	case target_position > i32(calculate_maximum_screen_position(grid.dimensions, u16(len(grid.contents)))):
-		grid.screen_position = calculate_maximum_screen_position(grid.dimensions, u16(len(grid.contents)))
+	case target_scroll < 0:
+		grid.screen_scroll = 0
+	case target_scroll > i32(calculate_maximum_screen_scroll(grid.dimensions, u16(len(grid.contents)))):
+		grid.screen_scroll = calculate_maximum_screen_scroll(grid.dimensions, u16(len(grid.contents)))
 	case:
-		grid.screen_position = u16(target_position)
+		grid.screen_scroll = u16(target_scroll)
 	}
 }
 
