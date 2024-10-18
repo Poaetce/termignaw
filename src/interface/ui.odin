@@ -6,12 +6,12 @@ import "vendor:raylib"
 
 // checks if cursor is at or over the end of the row
 is_cursor_at_edge :: proc(grid: ^Grid) -> (bool) {
-	return grid.cursor_position.x + 1 >= grid.dimensions.x
+	return grid.cursor.position.x + 1 >= grid.dimensions.x
 }
 
 // checks if cursor is at the last row
 is_cursor_at_last_row :: proc(grid: ^Grid) -> (bool) {
-	return grid.cursor_position.y + 1 >= u16(len(grid.contents))
+	return grid.cursor.position.y + 1 >= u16(len(grid.contents))
 }
 
 // creates and appends a new row to the grid
@@ -106,12 +106,12 @@ increment_cursor :: proc(grid: ^Grid) {
 		}
 
 		// wrap cursor to next row
-		grid.contents[grid.cursor_position.y].wrapping = true
-		grid.cursor_position.y += 1
-		grid.cursor_position.x = 0
+		grid.contents[grid.cursor.position.y].wrapping = true
+		grid.cursor.position.y += 1
+		grid.cursor.position.x = 0
 	} else {
 		// increment cursor
-		grid.cursor_position.x += 1
+		grid.cursor.position.x += 1
 	}
 }
 
@@ -147,12 +147,12 @@ map_character :: proc(character: rune, grid: ^Grid) {
 			scroll_screen(1, grid)
 		}
 
-		grid.cursor_position.y += 1
-		grid.cursor_position.x = 0
+		grid.cursor.position.y += 1
+		grid.cursor.position.x = 0
 	case '\r':
-		grid.cursor_position.x = 0
+		grid.cursor.position.x = 0
 	case '\t':
-		grid.cursor_position.x = round_to_next_multiple(grid.cursor_position.x, 4)
+		grid.cursor.position.x = round_to_next_multiple(grid.cursor.position.x, 4)
 	case:
 		// create a cell
 		cell: Cell
@@ -161,7 +161,7 @@ map_character :: proc(character: rune, grid: ^Grid) {
 		cell.background_color = raylib.WHITE
 
 		// set current cell to the new cell
-		grid.contents[grid.cursor_position.y].cells[grid.cursor_position.x] = cell
+		grid.contents[grid.cursor.position.y].cells[grid.cursor.position.x] = cell
 
 		// update cursor position
 		increment_cursor(grid)
