@@ -27,11 +27,19 @@ Row :: struct {
 	wrapping: bool,
 }
 
+// cursor state
+Cursor :: struct {
+	position: Grid_Vector,
+	foreground_color: raylib.Color,
+	background_color: raylib.Color,
+	font_variant: Font_Variant,
+}
+
 // terminal contents and state
 Grid :: struct {
 	dimensions: Grid_Vector,
 	contents: [dynamic]Row,
-	cursor_position: Grid_Vector,
+	cursor: ^Cursor,
 	screen_scroll: u16,
 }
 
