@@ -95,6 +95,8 @@ create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_V
 		new_row(grid)
 	}
 
+	grid.cursor = create_cursor()
+
 	return grid
 }
 
@@ -102,6 +104,8 @@ destroy_grid :: proc(grid: ^Grid) {
 	for row in grid.contents {delete(row.cells)}
 
 	delete(grid.contents)
+
+	free(grid.cursor)
 
 	free(grid)
 }
