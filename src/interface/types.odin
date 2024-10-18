@@ -75,6 +75,17 @@ create_row :: proc(length: u16) -> (row: Row) {
 	return row
 }
 
+create_cursor :: proc() -> (cursor: ^Cursor) {
+	cursor = new(Cursor)
+
+	// set cursor to default values
+	cursor.foreground_color = raylib.BLACK
+	cursor.background_color = raylib.WHITE
+	cursor.font_variant = Font_Variant.Normal
+
+	return cursor
+}
+
 create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_Vector) -> (grid: ^Grid) {
 	grid = new(Grid)
 	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
