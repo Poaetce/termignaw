@@ -159,6 +159,7 @@ map_character :: proc(character: rune, grid: ^Grid) {
 		cell.character = character
 		cell.foreground_color = grid.cursor.foreground_color
 		cell.background_color = grid.cursor.background_color
+		cell.font_variant = grid.cursor.font_variant
 
 		// set current cell to the new cell
 		grid.contents[grid.cursor.position.y].cells[grid.cursor.position.x] = cell
