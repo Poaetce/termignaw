@@ -60,7 +60,7 @@ open_window :: proc(terminal: ^Terminal) {
 
 // draws an individual character cell
 draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
-	font_info: ^Font_Info = terminal.font_group.variants[cell.variant]
+	font_info: ^Font_Info = terminal.font_group.variants[cell.font_variant]
 
 	// exit procedure if the character isn't loaded
 	if !slice.contains(

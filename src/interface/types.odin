@@ -19,7 +19,7 @@ Cell :: struct {
 	character: rune,
 	foreground_color: raylib.Color,
 	background_color: raylib.Color,
-	variant: Font_Variant,
+	font_variant: Font_Variant,
 }
 
 Row :: struct {
