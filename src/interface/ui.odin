@@ -117,23 +117,31 @@ increment_cursor :: proc(grid: ^Grid) {
 
 // maps a strand of text onto the grid
 map_strand :: proc(strand: string, terminal: ^Terminal) {
-	font_info: ^Font_Info = terminal.font_group.variants[Font_Variant.Normal]
-
-	contains_new_character: bool = false
+	variant_contains_new_character: [4]bool
 
 	for character in strand {
+		// get the current font variant and respective Font_Info
+		font_variant: Font_Variant = terminal.grid.cursor.font_variant
+		font_info: ^Font_Info = terminal.font_group.variants[font_variant]
+
 		map_character(character, terminal.grid)
 
-		// add new characters to font_info.loaded_characters
+		// add new characters to the respective font_info.loaded_characters
 		if !slice.contains(font_info.loaded_characters[:], character) {
-			contains_new_character = true
+			variant_contains_new_character[font_variant] = true
 
 			append(&font_info.loaded_characters, character)
 		}
 	}
 
-	// reloads font if the strand contains new characters
-	if contains_new_character {reload_font(font_info, terminal.font_group.size)}
+	// for each font variant
+	for _, index in Font_Variant {
+		// reload font if the strand contains new characters
+		if variant_contains_new_character[index] {
+			font_info: ^Font_Info = terminal.font_group.variants[index]
+			reload_font(font_info, terminal.font_group.size)
+		}
+	}
 }
 
 // maps a character onto the grid
