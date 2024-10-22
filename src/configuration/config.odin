@@ -5,6 +5,8 @@ import "vendor:raylib"
 CONFIG_FILE_PATH: string : "$HOME/.config/alacritty/alacritty.toml"
 
 Theme :: struct {
+	foreground: raylib.Color,
+	background: raylib.Color,
 	default: raylib.Color,
 	black: raylib.Color,
 	red: raylib.Color,
