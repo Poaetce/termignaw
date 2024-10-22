@@ -1,28 +1,28 @@
 package configuration
 
-import "vendor:raylib"
-
 CONFIG_FILE_PATH: string : "***REMOVED***"
 
+Color :: [4]u8
+
 Theme :: struct {
-	foreground: raylib.Color,
-	background: raylib.Color,
-	default: raylib.Color,
-	black: raylib.Color,
-	red: raylib.Color,
-	green: raylib.Color,
-	yellow: raylib.Color,
-	blue: raylib.Color,
-	magenta: raylib.Color,
-	cyan: raylib.Color,
-	light_gray: raylib.Color,
-	dark_gray: raylib.Color,
-	light_red: raylib.Color,
-	light_green: raylib.Color,
-	light_yellow: raylib.Color,
-	light_blue: raylib.Color,
-	light_magenta: raylib.Color,
-	light_cyan: raylib.Color,
+	foreground: Color,
+	background: Color,
+	default: Color,
+	black: Color,
+	red: Color,
+	green: Color,
+	yellow: Color,
+	blue: Color,
+	magenta: Color,
+	cyan: Color,
+	light_gray: Color,
+	dark_gray: Color,
+	light_red: Color,
+	light_green: Color,
+	light_yellow: Color,
+	light_blue: Color,
+	light_magenta: Color,
+	light_cyan: Color,
 }
 
 Config :: struct {
