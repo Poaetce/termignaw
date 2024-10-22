@@ -29,7 +29,10 @@ Config :: struct {
 		cursor: string,
 	},
 	font: struct {
-		family: string,
+		normal: string,
+		bold: string,
+		italic: string,
+		bold_italic: string,
 		size: u16,
 	},
 	window: struct {
