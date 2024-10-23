@@ -7,7 +7,6 @@ Color :: [4]u8
 Theme :: struct {
 	foreground: Color,
 	background: Color,
-	default: Color,
 	black: Color,
 	red: Color,
 	green: Color,
@@ -15,14 +14,15 @@ Theme :: struct {
 	blue: Color,
 	magenta: Color,
 	cyan: Color,
-	light_gray: Color,
-	dark_gray: Color,
-	light_red: Color,
-	light_green: Color,
-	light_yellow: Color,
-	light_blue: Color,
-	light_magenta: Color,
-	light_cyan: Color,
+	white: Color,
+	bright_black: Color,
+	bright_red: Color,
+	bright_green: Color,
+	bright_yellow: Color,
+	bright_blue: Color,
+	bright_magenta: Color,
+	bright_cyan: Color,
+	bright_white: Color,
 }
 
 Config :: struct {
