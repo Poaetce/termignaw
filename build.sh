@@ -4,14 +4,26 @@ directory="build"
 
 mkdir -p $directory
 
-if odin build src -out:"$directory/$name"
+if case "$1" in
+	"normal")
+		target="${directory}/${name}"
+		odin build src -out:${target}
+		;;
+	"debug")
+		target="${directory}/${name}_debug"
+		odin build src -debug -out:${target}
+		;;
+	*)
+		exit 1
+		;;
+esac
 then
-	echo $directory/$name
+	echo $target
 else
 	exit 1
 fi
 
-if [ "$1" = "run" ]
+if [ "$2" = "run" ]
 then
-	$directory/$name
+	$target
 fi
