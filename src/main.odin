@@ -3,7 +3,6 @@ package main
 import "core:fmt"
 import "core:os"
 import "core:sys/linux"
-import "core:unicode/utf8"
 import "vendor:raylib"
 
 import "pseudoterminal"
@@ -75,7 +74,7 @@ main :: proc() {
 				character > 0;
 				character = raylib.GetCharPressed()
 			{
-				write_character(character, pty)
+				pseudoterminal.write_character(character, pty)
 			}
 
 			for
@@ -101,15 +100,4 @@ main :: proc() {
 			interface.map_strand(buffer_strand, terminal)
 		}
 	}
-}
-
-// writes a charater to the pseudoterminal
-write_character :: proc(character: rune, pty: pseudoterminal.Pty) {
-	// encode the character into bytes
-	bytes: [4]u8
-	size: int
-	bytes, size = utf8.encode_rune(character)
-
-	// writes bytes to the master device
-	os.write(pty.master_fd, bytes[:size])
 }

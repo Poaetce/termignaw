@@ -4,6 +4,7 @@ import "core:os"
 import "core:os/os2"
 import "core:strings"
 import "core:sys/linux"
+import "core:unicode/utf8"
 
 foreign import "system:c"
 foreign c {
@@ -116,4 +117,15 @@ start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, suc
 	}
 
 	return process_id, true
+}
+
+// writes a charater to the pseudoterminal
+write_character :: proc(character: rune, pty: Pty) {
+	// encode the character into bytes
+	bytes: [4]u8
+	size: int
+	bytes, size = utf8.encode_rune(character)
+
+	// writes bytes to the master device
+	os.write(pty.master_fd, bytes[:size])
 }
