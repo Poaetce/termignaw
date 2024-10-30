@@ -37,13 +37,14 @@ main :: proc() {
 	defer interface.destroy_terminal(terminal)
 
 	pty: pseudoterminal.Pty
-	pty, success = pseudoterminal.set_up_pty()
-	if !success {return}
+	error: pseudoterminal.Error
+	pty, error = pseudoterminal.set_up_pty()
+	if error != nil {return}
 	defer pseudoterminal.close_pty(pty)
 
 	process_id: linux.Pid
-	process_id, success = pseudoterminal.start_shell(pty, "/bin/sh")
-	if !success {return}
+	process_id, error = pseudoterminal.start_shell(pty, "/bin/sh")
+	if error != nil {return}
 	if process_id < 0 {return}
 
 	if !pseudoterminal.set_non_blocking(pty) {return}
