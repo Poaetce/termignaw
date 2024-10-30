@@ -2,7 +2,7 @@ package configuration
 
 import "core:encoding/hex"
 
-CONFIG_FILE_PATH: string : "***REMOVED***"
+CONFIG_DIRECTORY: string : "$HOME/.config/termignaw"
 
 Color :: [4]u8
 
