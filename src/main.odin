@@ -84,9 +84,9 @@ main :: proc() {
 			{
 				#partial switch key {
 				case .ENTER:
-					write_character('\n', pty)
+					pseudoterminal.write_character('\n', pty)
 				case .BACKSPACE:
-					write_character('\b', pty)
+					pseudoterminal.write_character('\b', pty)
 				}
 			}
 
