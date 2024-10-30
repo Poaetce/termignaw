@@ -18,17 +18,13 @@ set_non_blocking :: proc(pty: Pty) -> (success: bool) {
 }
 
 // starts and attaches a child process (shell) to the slave device
-start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, success: bool) {
+start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, error: Error) {
 	// fork process
-	error: linux.Errno
-	process_id, error = linux.fork()
-	if error != nil {return 0, false}
+	process_id = linux.fork() or_return
 
 	if process_id == 0 {
 		// create new session group
-		error: linux.Errno
-		process_id, error = linux.setsid()
-		if error != nil {return 0, false}
+		process_id = linux.setsid() or_return
 
 		// redirect the standard streams to the slave device
 		linux.dup2(linux.Fd(pty.slave_fd), linux.Fd(os.stdin))
@@ -50,14 +46,14 @@ start_shell :: proc(pty: Pty, shell_name: string) -> (process_id: linux.Pid, suc
 		defer delete(shell_name_cstring)
 
 		// execute the shell
-		if linux.execve(
+		linux.execve(
 			shell_name_cstring,
 			raw_data([]cstring{shell_name_cstring, nil}),
 			raw_data(environment),
-		) != nil {return 0, false}
+		) or_return
 	}
 
-	return process_id, true
+	return process_id, nil
 }
 
 // writes a charater to the pseudoterminal
