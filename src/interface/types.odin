@@ -17,14 +17,6 @@ Row :: struct {
 	wrapping: bool,
 }
 
-// cursor state
-Cursor :: struct {
-	position: Grid_Vector,
-	foreground_color: raylib.Color,
-	background_color: raylib.Color,
-	font_variant: Font_Variant,
-}
-
 // terminal contents and state
 Grid :: struct {
 	dimensions: Grid_Vector,
@@ -49,17 +41,6 @@ Terminal :: struct {
 create_row :: proc(length: u16) -> (row: Row) {
 	row.cells = make([]Cell, int(length))
 	return row
-}
-
-create_cursor :: proc() -> (cursor: ^Cursor) {
-	cursor = new(Cursor)
-
-	// set cursor to default values
-	cursor.foreground_color = raylib.BLACK
-	cursor.background_color = raylib.WHITE
-	cursor.font_variant = Font_Variant.Normal
-
-	return cursor
 }
 
 create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_Vector) -> (grid: ^Grid) {
