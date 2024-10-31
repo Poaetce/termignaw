@@ -1,8 +1,6 @@
 package interface
 
-Grid_Vector :: [2]u16
-Window_Vector :: [2]u32
-
+// terminal window information
 Window :: struct {
 	title: string,
 	dimensions: Window_Vector,
