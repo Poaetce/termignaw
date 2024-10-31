@@ -59,8 +59,7 @@ create_font_group :: proc(
 		bold_italic: string,
 	},
 	text_size: u16,
-) -> (font_group: Font_Group, success:bool)
-{
+) -> (font_group: Font_Group, success:bool) {
 	font_group.size = text_size
 
 	// transmute font_names struct to an array to be indexed
@@ -72,4 +71,11 @@ create_font_group :: proc(
 	}
 
 	return font_group, true
+}
+
+// destroys all variants of a font group
+clear_font_group :: proc(font_group: Font_Group) {
+	for _, index in Font_Variant {
+		destroy_font_info(font_group.variants[index])
+	}
 }

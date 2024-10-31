@@ -46,9 +46,7 @@ create_terminal :: proc(
 destroy_terminal :: proc(terminal: ^Terminal) {
 	destroy_grid(terminal.grid)
 
-	for _, index in Font_Variant {
-		destroy_font_info(terminal.font_group.variants[index])
-	}
+	clear_font_group(terminal.font_group)
 
 	free(terminal)
 }
