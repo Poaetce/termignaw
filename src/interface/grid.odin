@@ -38,7 +38,11 @@ Grid :: struct {
 	screen_scroll: u16,			// scroll position of the screen
 }
 
-create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_Vector) -> (grid: ^Grid) {
+create_grid :: proc(
+	dimensions: Window_Vector,
+	text_size: u16,
+	padding: Window_Vector,
+) -> (grid: ^Grid) {
 	grid = new(Grid)
 	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
 
