@@ -4,6 +4,10 @@ import "core:os"
 import "core:strings"
 import "vendor:raylib"
 
+//---------
+// general font related types
+//---------
+
 // variant of a font
 Font_Variant :: enum u8 {
 	Normal,
@@ -12,12 +16,15 @@ Font_Variant :: enum u8 {
 	Bold_Italic,
 }
 
-// font and text related data
+//---------
+// <Font_Info> - font and text related data and information
+//---------
+
 Font_Info :: struct {
-	name: cstring,
-	data: []u8,
-	font: raylib.Font,
-	loaded_characters: [dynamic]rune,
+	name: cstring,						// filename of the font
+	data: []u8,							// raw font data
+	font: raylib.Font,					// loaded raylib font data
+	loaded_characters: [dynamic]rune,	// currently loaded characters
 }
 
 create_font_info :: proc(font_name: string) -> (font_info: ^Font_Info, success: bool) {
@@ -45,10 +52,13 @@ destroy_font_info :: proc(font_info: ^Font_Info) {
 	free(font_info)
 }
 
-// data for a group of font
+//---------
+// <Font_Group> - a group of variants of a font
+//---------
+
 Font_Group :: struct {
-	size: u16,
-	variants: [4]^Font_Info,
+	size: u16,					// size of the font
+	variants: [4]^Font_Info,	// font variants
 }
 
 create_font_group :: proc(
@@ -72,6 +82,10 @@ create_font_group :: proc(
 
 	return font_group, true
 }
+
+//---------
+// general font related procedures
+//---------
 
 // destroys all variants of a font group
 clear_font_group :: proc(font_group: Font_Group) {
