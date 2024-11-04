@@ -16,6 +16,14 @@ Font_Variant :: enum u8 {
 	Bold_Italic,
 }
 
+// names for each variant of a font
+Font_Names :: struct {
+	normal: string,
+	bold: string,
+	italic: string,
+	bold_italic: string,
+}
+
 //---------
 // <Font_Info> - font and text related data and information
 //---------
@@ -62,12 +70,7 @@ Font_Group :: struct {
 }
 
 create_font_group :: proc(
-	font_names: struct {
-		normal: string,
-		bold: string,
-		italic: string,
-		bold_italic: string,
-	},
+	font_names: Font_Names,
 	text_size: u16,
 ) -> (font_group: Font_Group, success:bool) {
 	font_group.size = text_size

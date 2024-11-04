@@ -23,12 +23,7 @@ Terminal :: struct {
 create_terminal :: proc(
 	title: string,
 	dimensions: Window_Vector,
-	font_names: struct {
-		normal: string,
-		bold: string,
-		italic: string,
-		bold_italic: string,
-	},
+	font_names: Font_Names,
 	text_size: u16,
 	padding: Window_Vector,
 ) -> (terminal: ^Terminal, success: bool) {
