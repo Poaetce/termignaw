@@ -7,7 +7,7 @@ import "core:sys/linux"
 import "core:unicode/utf8"
 
 //---------
-// general pseudoterminal procedures
+// general pseudoterminal related procedures
 //---------
 
 // sets the master device to non-blocking
