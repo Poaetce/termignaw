@@ -2,18 +2,24 @@ package interface
 
 import "vendor:raylib"
 
-// a character cell on the terminal grid
+//---------
+// <Cell> - a character cell on the terminal grid
+//---------
+
 Cell :: struct {
-	character: rune,
-	foreground_color: raylib.Color,
-	background_color: raylib.Color,
-	font_variant: Font_Variant,
+	character: rune,				// cell character
+	foreground_color: raylib.Color,	// foreground color of the cell
+	background_color: raylib.Color, // background color of the cell
+	font_variant: Font_Variant,		// font variant of the cell
 }
 
-// a row of cells
+//---------
+// <Row> - a row of cells
+//---------
+
 Row :: struct {
-	cells: []Cell,
-	wrapping: bool,
+	cells: []Cell,	// cells in the row
+	wrapping: bool,	// whether or not the row wraps to the next
 }
 
 create_row :: proc(length: u16) -> (row: Row) {
@@ -21,12 +27,15 @@ create_row :: proc(length: u16) -> (row: Row) {
 	return row
 }
 
-// terminal contents and state
+//---------
+// <Grid> - terminal grid contents and state
+//---------
+
 Grid :: struct {
-	dimensions: Grid_Vector,
-	contents: [dynamic]Row,
-	cursor: ^Cursor,
-	screen_scroll: u16,
+	dimensions: Grid_Vector,	// dimensions of the grid
+	contents: [dynamic]Row,		// contents of the grid
+	cursor: ^Cursor,			// the cursor
+	screen_scroll: u16,			// scroll position of the screen
 }
 
 create_grid :: proc(dimensions: Window_Vector, text_size: u16, padding: Window_Vector) -> (grid: ^Grid) {
