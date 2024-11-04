@@ -2,12 +2,15 @@ package interface
 
 import "vendor:raylib"
 
-// cursor state
+//---------
+// <Cursor> - cursor information and state
+//---------
+
 Cursor :: struct {
-	position: Grid_Vector,
-	foreground_color: raylib.Color,
-	background_color: raylib.Color,
-	font_variant: Font_Variant,
+	position: Grid_Vector,			// cursor position
+	foreground_color: raylib.Color,	// current foreground color
+	background_color: raylib.Color,	// current background color
+	font_variant: Font_Variant,		// current font variant
 }
 
 create_cursor :: proc() -> (cursor: ^Cursor) {
