@@ -93,3 +93,28 @@ clear_font_group :: proc(font_group: Font_Group) {
 		destroy_font_info(font_group.variants[index])
 	}
 }
+
+// loads all font variants
+load_font_group :: proc(font_group: Font_Group) {
+	for variant in font_group.variants {
+		load_font(variant, font_group.size)
+	}
+}
+
+// loads font using the font data
+load_font :: proc(font_info: ^Font_Info, font_size: u16) {
+	font_info.font = raylib.LoadFontFromMemory(
+		raylib.GetFileExtension(font_info.name),
+		raw_data(font_info.data),
+		i32(len(font_info.data)),
+		i32(font_size),
+		raw_data(font_info.loaded_characters),
+		i32(len(font_info.loaded_characters)),
+	)
+}
+
+// reloads the font with the updated details
+reload_font :: proc(font_info: ^Font_Info, font_size: u16) {
+	raylib.UnloadFont(font_info.font)
+	load_font(font_info, font_size)
+}
