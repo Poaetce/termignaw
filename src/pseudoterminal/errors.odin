@@ -3,6 +3,10 @@ package pseudoterminal
 import "core:os"
 import "core:sys/linux"
 
+//---------
+// pseudoterminal error types
+//---------
+
 Error :: union #shared_nil {
 	Setup_Error,
 	os.Error,
@@ -11,8 +15,8 @@ Error :: union #shared_nil {
 
 Setup_Error :: enum {
 	None = 0,
-	Unable_To_Open_Pseudoterminal,
-	Unable_To_Grant_Slave_Access,
-	Unable_To_Unlock_Slave,
-	No_Slave_Name,
+	Unable_To_Open_Pseudoterminal,	// posix_openpt fail
+	Unable_To_Grant_Slave_Access,	// grantpt fail
+	Unable_To_Unlock_Slave,			// unlockpt fail
+	No_Slave_Name,					// ptsname fail
 }

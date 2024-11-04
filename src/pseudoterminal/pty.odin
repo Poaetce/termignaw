@@ -12,10 +12,13 @@ foreign c {
 	ptsname :: proc(fd: i32) -> (cstring) ---
 }
 
-// file descriptors for the opened pseudoterminal devices
+//---------
+// <Pty> - an opened pseudoterminal device pair
+//---------
+
 Pty :: struct {
-	master_fd: os.Handle,
-	slave_fd: os.Handle,
+	master_fd: os.Handle,	// file descriptor for the master device
+	slave_fd: os.Handle,	// file descriptor for the slave device
 }
 
 // opens and sets up the pseudoterminal device pair

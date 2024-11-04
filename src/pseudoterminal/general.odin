@@ -6,6 +6,10 @@ import "core:strings"
 import "core:sys/linux"
 import "core:unicode/utf8"
 
+//---------
+// general pseudoterminal procedures
+//---------
+
 // sets the master device to non-blocking
 set_non_blocking :: proc(pty: Pty) -> (success: bool) {
 	if linux.fcntl_setfl(
