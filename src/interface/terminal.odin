@@ -1,13 +1,19 @@
 package interface
 
-// terminal window information
+//---------
+// <Window> - terminal window information
+//---------
+
 Window :: struct {
 	title: string,
 	dimensions: Window_Vector,
 	padding: Window_Vector,
 }
 
-// main terminal structure
+//---------
+// <Terminal> - main terminal structure
+//---------
+
 Terminal :: struct {
 	window: Window,
 	grid: ^Grid,
