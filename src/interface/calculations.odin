@@ -2,6 +2,10 @@ package interface
 
 import "core:math"
 
+//---------
+// general calculations
+//---------
+
 // calculates the dimensions for the terminal grid
 calculate_grid_dimensions :: proc(
 	window_dimensions: Window_Vector,
