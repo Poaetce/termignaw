@@ -1,5 +1,8 @@
 package interface
 
+import "core:strings"
+import "vendor:raylib"
+
 //---------
 // <Window> - terminal window information
 //---------
@@ -50,4 +53,38 @@ destroy_terminal :: proc(terminal: ^Terminal) {
 	clear_font_group(terminal.font_group)
 
 	free(terminal)
+}
+
+//---------
+// general terminal / window related procedures
+//---------
+
+// resizes the terminal
+resize_terminal :: proc(target_dimensions: Window_Vector, terminal: ^Terminal) {
+	// update the window dimensions to the new dimensions
+	terminal.window.dimensions = target_dimensions
+
+	// calculate the new target dimensions for the grid
+	target_grid_dimensions: Grid_Vector = calculate_grid_dimensions(
+		target_dimensions,
+		terminal.window.padding,
+		f32(terminal.font_group.size),
+	)
+
+	// resize the grid to the new dimensions
+	resize_grid(target_grid_dimensions, terminal.grid)
+}
+
+// initialises and opens the terminal window
+open_window :: proc(terminal: ^Terminal) {
+	window_title: cstring = strings.clone_to_cstring(terminal.window.title)
+	defer delete(window_title)
+
+	raylib.InitWindow(
+		i32(terminal.window.dimensions.x),
+		i32(terminal.window.dimensions.y),
+		window_title,
+	)
+
+	load_font_group(terminal.font_group)
 }

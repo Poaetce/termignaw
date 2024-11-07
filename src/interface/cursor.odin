@@ -23,3 +23,36 @@ create_cursor :: proc() -> (cursor: ^Cursor) {
 
 	return cursor
 }
+
+//---------
+// general cursor related procedures
+//---------
+
+// checks if cursor is at or over the end of the row
+is_cursor_at_edge :: proc(grid: ^Grid) -> (bool) {
+	return grid.cursor.position.x + 1 >= grid.dimensions.x
+}
+
+// checks if cursor is at the last row
+is_cursor_at_last_row :: proc(grid: ^Grid) -> (bool) {
+	return grid.cursor.position.y + 1 >= u16(len(grid.contents))
+}
+
+// moves cursor to the next cell
+increment_cursor :: proc(grid: ^Grid) {
+	if is_cursor_at_edge(grid) {
+		// creates a new row if needed
+		if is_cursor_at_last_row(grid) {
+			new_row(grid)
+			scroll_screen(1, grid)
+		}
+
+		// wrap cursor to next row
+		grid.contents[grid.cursor.position.y].wrapping = true
+		grid.cursor.position.y += 1
+		grid.cursor.position.x = 0
+	} else {
+		// increment cursor
+		grid.cursor.position.x += 1
+	}
+}
