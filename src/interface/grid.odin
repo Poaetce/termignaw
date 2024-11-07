@@ -120,12 +120,15 @@ scroll_screen :: proc(amount: i32 , grid: ^Grid) {
 	// calulate the target position
 	target_scroll: i32 = i32(grid.screen_scroll) + amount
 
+	// calculate the maximum screen scroll
+	maximum_scroll: u16 = calculate_maximum_screen_scroll(grid.dimensions, u16(len(grid.contents)))
+
 	// clamps the scroll between 0 and the grid's maximum
 	switch {
 	case target_scroll < 0:
 		grid.screen_scroll = 0
-	case target_scroll > i32(calculate_maximum_screen_scroll(grid.dimensions, u16(len(grid.contents)))):
-		grid.screen_scroll = calculate_maximum_screen_scroll(grid.dimensions, u16(len(grid.contents)))
+	case target_scroll > i32(maximum_scroll):
+		grid.screen_scroll = maximum_scroll
 	case:
 		grid.screen_scroll = u16(target_scroll)
 	}
