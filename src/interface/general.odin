@@ -9,7 +9,9 @@ import "vendor:raylib"
 
 // renders all cells in the terminal grid
 render_grid :: proc(terminal: ^Terminal) {
-	for row, y in terminal.grid.contents[terminal.grid.screen_scroll:][:terminal.grid.dimensions.y] {
+	for row, y in
+		terminal.grid.contents[terminal.grid.screen_scroll:][:terminal.grid.dimensions.y]
+	{
 		for cell, x in row.cells {
 			draw_cell(cell, Grid_Vector{u16(x), u16(y)}, terminal)
 		}
