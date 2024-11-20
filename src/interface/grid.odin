@@ -71,6 +71,7 @@ destroy_grid :: proc(grid: ^Grid) {
 //---------
 
 // resizes the grid
+@(private)
 resize_grid :: proc(target_dimensions: Grid_Vector, grid: ^Grid) {
 	// update the grid dimensio
 	grid.dimensions = target_dimensions
@@ -116,6 +117,7 @@ resize_grid :: proc(target_dimensions: Grid_Vector, grid: ^Grid) {
 }
 
 // moves the screen_scroll by an amount
+@(private)
 scroll_screen :: proc(amount: i32 , grid: ^Grid) {
 	// calulate the target position
 	target_scroll: i32 = i32(grid.screen_scroll) + amount
@@ -135,6 +137,7 @@ scroll_screen :: proc(amount: i32 , grid: ^Grid) {
 }
 
 // creates and appends a new row to the grid
+@(private)
 new_row :: proc(grid: ^Grid) {
 	append(&grid.contents, create_row(grid.dimensions.x))
 }

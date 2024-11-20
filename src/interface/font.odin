@@ -17,6 +17,7 @@ Font_Variant :: enum u8 {
 }
 
 // names for each variant of a font
+@(private)
 Font_Names :: struct {
 	normal: string,
 	bold: string,
@@ -91,6 +92,7 @@ create_font_group :: proc(
 //---------
 
 // destroys all variants of a font group
+@(private)
 clear_font_group :: proc(font_group: Font_Group) {
 	for _, index in Font_Variant {
 		destroy_font_info(font_group.variants[index])
@@ -98,6 +100,7 @@ clear_font_group :: proc(font_group: Font_Group) {
 }
 
 // loads all font variants
+@(private)
 load_font_group :: proc(font_group: Font_Group) {
 	for variant in font_group.variants {
 		load_font(variant, font_group.size)
@@ -105,6 +108,7 @@ load_font_group :: proc(font_group: Font_Group) {
 }
 
 // loads font using the font data
+@(private)
 load_font :: proc(font_info: ^Font_Info, font_size: u16) {
 	font_info.font = raylib.LoadFontFromMemory(
 		raylib.GetFileExtension(font_info.name),
@@ -117,6 +121,7 @@ load_font :: proc(font_info: ^Font_Info, font_size: u16) {
 }
 
 // reloads the font with the updated details
+@(private)
 reload_font :: proc(font_info: ^Font_Info, font_size: u16) {
 	raylib.UnloadFont(font_info.font)
 	load_font(font_info, font_size)

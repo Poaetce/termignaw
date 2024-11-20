@@ -29,16 +29,19 @@ create_cursor :: proc() -> (cursor: ^Cursor) {
 //---------
 
 // checks if cursor is at or over the end of the row
+@(private)
 is_cursor_at_edge :: proc(grid: ^Grid) -> (bool) {
 	return grid.cursor.position.x + 1 >= grid.dimensions.x
 }
 
 // checks if cursor is at the last row
+@(private)
 is_cursor_at_last_row :: proc(grid: ^Grid) -> (bool) {
 	return grid.cursor.position.y + 1 >= u16(len(grid.contents))
 }
 
 // moves cursor to the next cell
+@(private)
 increment_cursor :: proc(grid: ^Grid) {
 	if is_cursor_at_edge(grid) {
 		// creates a new row if needed

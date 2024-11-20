@@ -19,6 +19,7 @@ render_grid :: proc(terminal: ^Terminal) {
 }
 
 // draws an individual character cell
+@(private)
 draw_cell :: proc(cell: Cell, position: Grid_Vector, terminal: ^Terminal) {
 	font_info: ^Font_Info = terminal.font_group.variants[cell.font_variant]
 
@@ -90,6 +91,7 @@ map_strand :: proc(strand: string, terminal: ^Terminal) {
 }
 
 // maps a character onto the grid
+@(private)
 map_character :: proc(character: rune, grid: ^Grid) {
 	// match character for special characters
 	switch character {
