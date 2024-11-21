@@ -10,7 +10,7 @@ CONFIG_DIRECTORY: string : "$HOME/.config/termignaw"
 // config related types
 //---------
 
-Color :: [4]u8
+Color :: [3]u8
 
 Theme :: struct {
 	foreground: Color,
