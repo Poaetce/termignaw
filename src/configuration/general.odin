@@ -10,15 +10,7 @@ import "core:strings"
 
 @(private)
 read_theme :: proc(theme_name: string) -> (theme: Theme, error: Error) {
-	data: []u8;
-	success: bool;
-	data, success = os.read_entire_file(theme_name)
-	if !success {return Theme{}, General_Error.Unable_To_Read_File}
-
-	data_cstring: cstring = strings.clone_to_cstring(string(data))
-
-	table: ^TomlTable = toml_parse(data_cstring, nil, 0)
-	if table == nil {return Theme{}, Parsing_Error.Cannot_Parse_Table}
+	table: ^TomlTable = read_and_parse_toml(theme_name) or_return
 
 	theme_array: [18]Color
 	theme_options := [18]cstring{
@@ -47,6 +39,7 @@ read_theme :: proc(theme_name: string) -> (theme: Theme, error: Error) {
 			return {}, Config_Error.Option_Nonexistent
 		}
 
+		success: bool
 		theme_array[index], success = decode_color(string(toml_string_in(table, option).u.s))
 		if !success {return Theme{}, Parsing_Error.Cannot_Decode_Color}
 	}
@@ -65,4 +58,21 @@ decode_color :: proc(hex_code: string) -> (color: Color, success: bool) {
 		hex.decode_sequence(hex_code[3:5]) or_return,
 		hex.decode_sequence(hex_code[5:7]) or_return,
 	}, true
+}
+
+@(private)
+read_and_parse_toml :: proc(filename: string) -> (table: ^TomlTable, error: Error) {
+	data: []u8
+	success: bool
+	data, success = os.read_entire_file(filename)
+	if !success {return nil, General_Error.Unable_To_Read_File}
+	defer delete(data)
+
+	data_cstring: cstring = strings.clone_to_cstring(string(data))
+	defer delete(data_cstring)
+
+	table = toml_parse(data_cstring, nil, 0)
+	if table == nil {return nil, Parsing_Error.Cannot_Parse_Table}
+
+	return table, nil
 }
