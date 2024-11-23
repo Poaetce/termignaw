@@ -10,7 +10,7 @@ import "core:strings"
 
 @(private)
 read_theme :: proc(theme_name: string) -> (theme: Theme, error: Error) {
-	table: ^TomlTable = read_and_parse_toml(theme_name) or_return
+	table: ^Toml_Table = read_and_parse_toml(theme_name) or_return
 
 	theme_array: [18]Color
 	theme_options := [18]cstring{
@@ -61,7 +61,7 @@ decode_color :: proc(hex_code: string) -> (color: Color, success: bool) {
 }
 
 @(private)
-read_and_parse_toml :: proc(filename: string) -> (table: ^TomlTable, error: Error) {
+read_and_parse_toml :: proc(filename: string) -> (table: ^Toml_Table, error: Error) {
 	data: []u8
 	success: bool
 	data, success = os.read_entire_file(filename)

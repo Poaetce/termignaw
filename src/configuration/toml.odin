@@ -2,7 +2,7 @@ package configuration
 
 foreign import "lib/libtoml.a"
 
-TomlDatum :: struct {
+Toml_Datum :: struct {
 	ok: bool,
 	u: struct #raw_union {
 		s: cstring,
@@ -12,44 +12,44 @@ TomlDatum :: struct {
 	}
 }
 
-TomlKeyval :: struct {
+Toml_Keyval :: struct {
 	key: cstring,
 	val: cstring,
 }
 
-TomlArritem :: struct {
+Toml_Arritem :: struct {
 	valtype: i32,
 	val: cstring,
-	arr: ^TomlArray,
-	tab: ^TomlTable,
+	arr: ^Toml_Array,
+	tab: ^Toml_Table,
 }
 
-TomlArray :: struct {
+Toml_Array :: struct {
 	key: cstring,
 	kind: i32,
 	type: i32,
 	nitem: i32,
-	item: [^]TomlArritem,
+	item: [^]Toml_Arritem,
 }
 
-TomlTable :: struct {
+Toml_Table :: struct {
 	key: cstring,
 	implicit: bool,
 	readonly: bool,
 	nkval: i32,
-	kval: [^]^TomlKeyval,
+	kval: [^]^Toml_Keyval,
 	narr: i32,
-	arr: [^]^TomlArray,
+	arr: [^]^Toml_Array,
 	ntab: i32,
-	tab: [^]^TomlTable,
+	tab: [^]^Toml_Table,
 }
 
 foreign libtoml {
-	toml_parse :: proc(conf: cstring, errbuf: [^]rune, errbufsz: i32) -> (^TomlTable) ---
-	toml_free :: proc(tab: ^TomlTable) ---
-	toml_key_exists :: proc(tab: ^TomlTable, key: cstring) -> (bool) ---
-	toml_table_in :: proc(tab: ^TomlTable, key: cstring) -> (^TomlTable) ---
-	toml_string_in :: proc(tab: ^TomlTable, key: cstring) -> (TomlDatum) ---
-	toml_bool_in :: proc(tab: ^TomlTable, key: cstring) -> (TomlDatum) ---
-	toml_int_in :: proc(tab: ^TomlTable, key: cstring) -> (TomlDatum) ---
+	toml_parse :: proc(conf: cstring, errbuf: [^]rune, errbufsz: i32) -> (^Toml_Table) ---
+	toml_free :: proc(tab: ^Toml_Table) ---
+	toml_key_exists :: proc(tab: ^Toml_Table, key: cstring) -> (bool) ---
+	toml_table_in :: proc(tab: ^Toml_Table, key: cstring) -> (^Toml_Table) ---
+	toml_string_in :: proc(tab: ^Toml_Table, key: cstring) -> (Toml_Datum) ---
+	toml_bool_in :: proc(tab: ^Toml_Table, key: cstring) -> (Toml_Datum) ---
+	toml_int_in :: proc(tab: ^Toml_Table, key: cstring) -> (Toml_Datum) ---
 }
