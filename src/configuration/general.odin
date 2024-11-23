@@ -35,9 +35,7 @@ read_theme :: proc(theme_name: string) -> (theme: Theme, error: Error) {
 	}
 
 	for option, index in theme_options {
-		if !toml_key_exists(table, option) {
-			return {}, Config_Error.Option_Nonexistent
-		}
+		if !toml_key_exists(table, option) {return Theme{}, Config_Error.Option_Nonexistent}
 
 		success: bool
 		theme_array[index], success = decode_color(string(toml_string_in(table, option).u.s))
