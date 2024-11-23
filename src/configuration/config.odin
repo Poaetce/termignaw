@@ -36,7 +36,7 @@ Theme :: struct {
 Config :: struct {
 	appearance: struct {
 		theme: Theme,
-		cursor: string,
+		// cursor: string,
 	},
 	font: struct {
 		normal: string,
@@ -53,6 +53,6 @@ Config :: struct {
 	},
 	general: struct {
 		shell: string,
-		wrapping: bool,
+		// wrapping: bool,
 	},
 }
