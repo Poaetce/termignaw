@@ -1,12 +1,92 @@
 package configuration
 
 import "core:encoding/hex"
+import "core:fmt"
 import "core:os"
 import "core:strings"
 
 //---------
 // reading related procedures
 //---------
+
+read_config :: proc() -> (config: Config, error: Error) {
+	config_name: string = fmt.aprintf("{}/termignaw.toml", CONFIG_DIRECTORY)
+	defer delete(config_name)
+
+	table: ^Toml_Table = read_and_parse_toml(config_name) or_return
+
+	if !toml_key_exists(table, "appearance") {return Config{}, Config_Error.Option_Nonexistent}
+	appearance_table: ^Toml_Table = toml_table_in(table, "appearance")
+
+	if !toml_key_exists(appearance_table, "theme") {
+		return Config{}, Config_Error.Option_Nonexistent
+	}
+
+	theme_name: string = fmt.aprintf(
+		"{}/{}",
+		CONFIG_DIRECTORY,
+		string(toml_string_in(appearance_table, "theme").u.s)
+	)
+	defer delete(theme_name)
+
+	config.appearance.theme = read_theme(theme_name) or_return
+
+	if !toml_key_exists(table, "font") {return Config{}, Config_Error.Option_Nonexistent}
+	font_table: ^Toml_Table = toml_table_in(table, "font")
+
+	if !toml_key_exists(font_table, "normal") {return Config{}, Config_Error.Option_Nonexistent}
+	config.font.normal = string(toml_string_in(font_table, "normal").u.s)
+
+	if !toml_key_exists(font_table, "bold") {config.font.bold = config.font.normal}
+	else {config.font.bold = string(toml_string_in(font_table, "bold").u.s)}
+
+	if !toml_key_exists(font_table, "italic") {config.font.italic = config.font.normal}
+	else {config.font.italic = string(toml_string_in(font_table, "italic").u.s)}
+
+	if !toml_key_exists(font_table, "bold_italic") {config.font.bold_italic = config.font.normal}
+	else {config.font.bold_italic = string(toml_string_in(font_table, "bold_italic").u.s)}
+
+	if !toml_key_exists(font_table, "size") {return Config{}, Config_Error.Option_Nonexistent}
+	config.font.size = u16(toml_int_in(font_table, "size").u.i)
+
+	if !toml_key_exists(table, "window") {return Config{}, Config_Error.Option_Nonexistent}
+	window_table: ^Toml_Table = toml_table_in(table, "window")
+
+	if !toml_key_exists(window_table, "title") {config.window.title = "Termignaw"}
+	else {config.window.title = string(toml_string_in(window_table, "title").u.s)}
+
+	if !toml_key_exists(window_table, "dimensions") {
+		return Config{}, Config_Error.Option_Nonexistent
+	}
+	config.window.dimensions.x = u32(toml_int_in(
+		toml_table_in(window_table, "dimensions"),
+		"x",
+	).u.i)
+	config.window.dimensions.y = u32(toml_int_in(
+		toml_table_in(window_table, "dimensions"),
+		"y",
+	).u.i)
+
+	if !toml_key_exists(window_table, "padding") {
+		return Config{}, Config_Error.Option_Nonexistent
+	}
+	config.window.padding.x = u32(toml_int_in(
+		toml_table_in(window_table, "padding"),
+		"x",
+	).u.i)
+	config.window.padding.y = u32(toml_int_in(
+		toml_table_in(window_table, "padding"),
+		"y",
+	).u.i)
+
+	if !toml_key_exists(table, "general") {return Config{}, Config_Error.Option_Nonexistent}
+	general_table: ^Toml_Table = toml_table_in(table, "general")
+
+	if !toml_key_exists(general_table, "shell") {return Config{}, Config_Error.Option_Nonexistent}
+	config.general.shell = string(toml_string_in(general_table, "shell").u.s)
+
+	return config, nil
+}
 
 @(private)
 read_theme :: proc(theme_name: string) -> (theme: Theme, error: Error) {
