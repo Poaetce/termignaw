@@ -1,0 +1,17 @@
+[appearance]
+theme = 'theme.toml'
+
+[font]
+normal = 'test-assets/fonts/CascadiaCodeNF-Regular.ttf'
+bold = 'test-assets/fonts/CascadiaCodeNF-Bold.ttf'
+italic = 'test-assets/fonts/CascadiaCodeNF-Italic.ttf'
+bold_italic = 'test-assets/fonts/CascadiaCodeNF-BoldItalic.ttf'
+size = 12
+
+[window]
+fullscreen = true
+dimensions = {x = 1280, y = 720}
+padding = {x = 10, y = 10}
+
+[general]
+shell = '/bin/sh'
