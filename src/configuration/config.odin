@@ -47,7 +47,7 @@ Config :: struct {
 	},
 	window: struct {
 		title: string,
-		fullscreen: bool,
+		// fullscreen: bool,
 		dimensions: [2]u32,
 		padding: [2]u32,
 	},
