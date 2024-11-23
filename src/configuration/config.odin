@@ -4,7 +4,7 @@ package configuration
 // config related constants
 //---------
 
-CONFIG_DIRECTORY: string : "$HOME/.config/termignaw"
+CONFIG_DIRECTORY: string : "test-assets/config" when ODIN_DEBUG else "$HOME/.config/termignaw"
 
 //---------
 // config related types
