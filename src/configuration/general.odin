@@ -14,6 +14,7 @@ read_config :: proc() -> (config: Config, error: Error) {
 	defer delete(config_name)
 
 	table: ^Toml_Table = read_and_parse_toml(config_name) or_return
+	defer toml_free(table)
 
 	if !toml_key_exists(table, "appearance") {return Config{}, Config_Error.Option_Nonexistent}
 	appearance_table: ^Toml_Table = toml_table_in(table, "appearance")
@@ -91,6 +92,7 @@ read_config :: proc() -> (config: Config, error: Error) {
 @(private)
 read_theme :: proc(theme_name: string) -> (theme: Theme, error: Error) {
 	table: ^Toml_Table = read_and_parse_toml(theme_name) or_return
+	defer toml_free(table)
 
 	theme_array: [18]Color
 	theme_options := [18]cstring{
