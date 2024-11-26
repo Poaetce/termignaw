@@ -33,26 +33,34 @@ Theme :: struct {
 	bright_white: Color,
 }
 
+Appearance_Table :: struct {
+	theme: Theme,
+	// cursor: string,
+}
+
+Font_Table :: struct {
+	normal: string,
+	bold: string,
+	italic: string,
+	bold_italic: string,
+	size: u16,
+}
+
+Window_Table :: struct {
+	title: string,
+	// fullscreen: bool,
+	dimensions: [2]u32,
+	padding: [2]u32,
+}
+
+General_Table :: struct {
+	shell: string,
+	// wrapping: bool,
+}
+
 Config :: struct {
-	appearance: struct {
-		theme: Theme,
-		// cursor: string,
-	},
-	font: struct {
-		normal: string,
-		bold: string,
-		italic: string,
-		bold_italic: string,
-		size: u16,
-	},
-	window: struct {
-		title: string,
-		// fullscreen: bool,
-		dimensions: [2]u32,
-		padding: [2]u32,
-	},
-	general: struct {
-		shell: string,
-		// wrapping: bool,
-	},
+	appearance: Appearance_Table,
+	font: Font_Table,
+	window: Window_Table,
+	general: General_Table,
 }
