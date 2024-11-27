@@ -12,19 +12,24 @@ import "configuration"
 BUFFER_SIZE: u16 : 1024
 
 main :: proc() {
+	error: union #shared_nil {configuration.Error, pseudoterminal.Error}
+	config: configuration.Config
+	config, error = configuration.read_config()
+	if error != nil {return}
+
 	success: bool
 	terminal: ^interface.Terminal
 	terminal, success = interface.create_terminal(
-		"Termignaw",
-		[2]u32{1280, 720},
+		config.window.title,
+		config.window.dimensions,
 		{
-			"test-assets/fonts/CascadiaCodeNF-Regular.ttf",
-			"test-assets/fonts/CascadiaCodeNF-Bold.ttf",
-			"test-assets/fonts/CascadiaCodeNF-Italic.ttf",
-			"test-assets/fonts/CascadiaCodeNF-BoldItalic.ttf",
+			config.font.normal,
+			config.font.bold,
+			config.font.italic,
+			config.font.bold_italic,
 		},
-		50,
-		[2]u32{10, 10},
+		config.font.size,
+		config.window.padding,
 	)
 	if !success {return}
 
@@ -37,13 +42,12 @@ main :: proc() {
 	defer interface.destroy_terminal(terminal)
 
 	pty: pseudoterminal.Pty
-	error: pseudoterminal.Error
 	pty, error = pseudoterminal.set_up_pty()
 	if error != nil {return}
 	defer pseudoterminal.close_pty(pty)
 
 	process_id: linux.Pid
-	process_id, error = pseudoterminal.start_shell(pty, "/bin/sh")
+	process_id, error = pseudoterminal.start_shell(pty, config.general.shell)
 	if error != nil {return}
 	if process_id < 0 {return}
 
