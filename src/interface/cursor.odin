@@ -13,12 +13,12 @@ Cursor :: struct {
 	font_variant: Font_Variant,		// current font variant
 }
 
-create_cursor :: proc() -> (cursor: ^Cursor) {
+create_cursor :: proc(theme: ^Theme) -> (cursor: ^Cursor) {
 	cursor = new(Cursor)
 
 	// set cursor to default values
-	cursor.foreground_color = raylib.BLACK
-	cursor.background_color = raylib.WHITE
+	cursor.foreground_color = raylib.Color(theme.foreground)
+	cursor.background_color = raylib.Color(theme.background)
 	cursor.font_variant = Font_Variant.Normal
 
 	return cursor

@@ -42,6 +42,7 @@ create_grid :: proc(
 	dimensions: Window_Vector,
 	text_size: u16,
 	padding: Window_Vector,
+	theme: ^Theme,
 ) -> (grid: ^Grid) {
 	grid = new(Grid)
 	grid.dimensions = calculate_grid_dimensions(dimensions, padding, f32(text_size))
@@ -51,7 +52,7 @@ create_grid :: proc(
 		new_row(grid)
 	}
 
-	grid.cursor = create_cursor()
+	grid.cursor = create_cursor(theme)
 
 	return grid
 }

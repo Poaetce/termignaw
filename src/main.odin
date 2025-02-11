@@ -30,6 +30,7 @@ main :: proc() {
 		},
 		config.font.size,
 		config.window.padding,
+		&config.appearance.theme,
 	)
 	if !success {return}
 
@@ -60,7 +61,7 @@ main :: proc() {
 			raylib.BeginDrawing()
 			defer raylib.EndDrawing()
 
-			raylib.ClearBackground(raylib.WHITE)
+			raylib.ClearBackground(raylib.Color(config.appearance.theme.background))
 
 			interface.render_grid(terminal)
 		}

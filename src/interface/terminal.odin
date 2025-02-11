@@ -29,6 +29,7 @@ create_terminal :: proc(
 	font_names: Font_Names,
 	text_size: u16,
 	padding: Window_Vector,
+	theme: ^Theme,
 ) -> (terminal: ^Terminal, success: bool) {
 	terminal = new(Terminal)
 
@@ -42,7 +43,7 @@ create_terminal :: proc(
 		return nil, false
 	}
 
-	terminal.grid = create_grid(dimensions, text_size, padding)
+	terminal.grid = create_grid(dimensions, text_size, padding, theme)
 
 	return terminal, true
 }
