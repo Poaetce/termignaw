@@ -74,38 +74,15 @@ destroy_grid :: proc(grid: ^Grid) {
 // resizes the grid
 @(private)
 resize_grid :: proc(target_dimensions: Grid_Vector, grid: ^Grid) {
-	// update the grid dimensio
+	// update the grid dimensions
 	grid.dimensions = target_dimensions
 
-	// for each row of the grid
-	for &row in grid.contents {
-		// matche if the row's width is increased or decreased
-		switch {
-		case target_dimensions.x > u16(len(row.cells)):
-			// create new slice for the row's cells
-			new_cells: []Cell = make([]Cell, int(grid.dimensions.x))
-
-			// copy each cell of the row to the new slice
-			for cell, index in row.cells {
-				new_cells[index] = cell
-			}
-
-			// replace the old row slice with the new one
-			delete(row.cells)
-			row.cells = new_cells
-		case target_dimensions.x < u16(len(row.cells)):
-			// create new slice for the row's cells
-			new_cells: []Cell = make([]Cell, int(grid.dimensions.x))
-
-			// copy the cell of the row to the new slice
-			for &new_cell, index in new_cells {
-				new_cell = row.cells[index]
-			}
-
-			// replace the old row slice with the new one
-			delete(row.cells)
-			row.cells = new_cells
-		}
+	// match if the row's width is increased or decreased
+	switch {
+	case target_dimensions.x > u16(len(grid.contents[0].cells)):
+		increase_grid_width(grid)
+	case target_dimensions.x < u16(len(grid.contents[0].cells)):
+		decrease_grid_width(grid)
 	}
 
 	// create new empty rows if needed
@@ -114,6 +91,44 @@ resize_grid :: proc(target_dimensions: Grid_Vector, grid: ^Grid) {
 		for index in 0..=row_increase {
 			new_row(grid)
 		}
+	}
+}
+
+// increases the width of the grid
+@(private)
+increase_grid_width :: proc(grid: ^Grid) {
+	// for each row in the grid
+	for &row in grid.contents {
+		// create new slice for the row's cells
+		new_cells: []Cell = make([]Cell, int(grid.dimensions.x))
+
+		// copy each cell of the row to the new slice
+		for cell, index in row.cells {
+			new_cells[index] = cell
+		}
+
+		// replace the old row slice with the new one
+		delete(row.cells)
+		row.cells = new_cells
+	}
+}
+
+// decreases the width of the grid
+@(private)
+decrease_grid_width :: proc(grid: ^Grid) {
+	// for each row in the grid
+	for &row in grid.contents {
+		// create new slice for the row's cells
+		new_cells: []Cell = make([]Cell, int(grid.dimensions.x))
+
+		// copy the cell of the row to the new slice
+		for &new_cell, index in new_cells {
+			new_cell = row.cells[index]
+		}
+
+		// replace the old row slice with the new one
+		delete(row.cells)
+		row.cells = new_cells
 	}
 }
 
