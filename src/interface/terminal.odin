@@ -73,7 +73,9 @@ resize_terminal :: proc(target_dimensions: Window_Vector, terminal: ^Terminal) {
 	)
 
 	// resize the grid to the new dimensions
-	resize_grid(target_grid_dimensions, terminal.grid)
+	if terminal.grid.dimensions != target_grid_dimensions {
+		resize_grid(target_grid_dimensions, terminal.grid)
+	}
 }
 
 // initialises and opens the terminal window
