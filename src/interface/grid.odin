@@ -77,13 +77,8 @@ resize_grid :: proc(target_dimensions: Grid_Vector, grid: ^Grid) {
 	// update the grid dimensions
 	grid.dimensions = target_dimensions
 
-	// match if the row's width is increased or decreased
-	switch {
-	case target_dimensions.x > u16(len(grid.contents[0].cells)):
-		increase_grid_width(grid)
-	case target_dimensions.x < u16(len(grid.contents[0].cells)):
-		decrease_grid_width(grid)
-	}
+	// resize the grid
+	resize_grid_contents_cut(grid)
 
 	// create new empty rows if needed
 	row_increase: int = int(target_dimensions.y) - len(grid.contents)
@@ -94,36 +89,28 @@ resize_grid :: proc(target_dimensions: Grid_Vector, grid: ^Grid) {
 	}
 }
 
-// increases the width of the grid
+// resize the grid contents without wrapping or unwrapping
 @(private)
-increase_grid_width :: proc(grid: ^Grid) {
+resize_grid_contents_cut :: proc(grid: ^Grid) {
+	// check if the row's width is increased
+	increased_width: bool = grid.dimensions.x > u16(len(grid.contents[0].cells))
+
 	// for each row in the grid
 	for &row in grid.contents {
 		// create new slice for the row's cells
 		new_cells: []Cell = make([]Cell, int(grid.dimensions.x))
 
-		// copy each cell of the row to the new slice
-		for cell, index in row.cells {
-			new_cells[index] = cell
+		if increased_width {
+			// copy all cells of the current row to the new slice
+			for cell, index in row.cells {
+				new_cells[index] = cell
+			}
 		}
-
-		// replace the old row slice with the new one
-		delete(row.cells)
-		row.cells = new_cells
-	}
-}
-
-// decreases the width of the grid
-@(private)
-decrease_grid_width :: proc(grid: ^Grid) {
-	// for each row in the grid
-	for &row in grid.contents {
-		// create new slice for the row's cells
-		new_cells: []Cell = make([]Cell, int(grid.dimensions.x))
-
-		// copy the cell of the row to the new slice
-		for &new_cell, index in new_cells {
-			new_cell = row.cells[index]
+		else {
+			// update all cells of the new slice from the current row
+			for &new_cell, index in new_cells {
+				new_cell = row.cells[index]
+			}
 		}
 
 		// replace the old row slice with the new one
